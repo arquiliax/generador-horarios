@@ -3,83 +3,145 @@ import random
 import pandas as pd
 
 # =========================================================================
-# 📚 BASE DE DATOS MATRICIAL: MAPA CURRICULAR COMPLETO (1° A 10° SEMESTRE)
+# 📚 CATÁLOGO REAL EXTRAÍDO DE TU DOCUMENTO OFICIAL (PRIMAVERA 2026)
 # =========================================================================
 CATALOGO_MATERIAS = [
-    # --- PRIMER SEMESTRE ---
-    {"nrc": "10101", "clave": "PSI-101", "materia": "Epistemología de la Psicología", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "GONZALEZ SANCHEZ JORGE", "semestre": "1° Semestre"},
-    {"nrc": "10102", "clave": "PSI-101", "materia": "Epistemología de la Psicología", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "RAMIREZ MIRELES ANA", "semestre": "1° Semestre"},
-    {"nrc": "10103", "clave": "PSI-102", "materia": "Bases Biológicas de la Conducta", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MARTINEZ REYES LUIS", "semestre": "1° Semestre"},
-    {"nrc": "10104", "clave": "PSI-103", "materia": "Historia de la Psicología", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "CASTRO OLMOS ELENA", "semestre": "1° Semestre"},
-    {"nrc": "10105", "clave": "FGUS-001", "materia": "Formación Humana y Social", "secc": "401", "dias": "LM", "hora": "1300-1459", "profesor": "PEREZ RAMOS PEDRO", "semestre": "1° Semestre"},
+    # --- 1er SEMESTRE ---
+    {"nrc": "40110", "clave": "FGMA 001", "materia": "Introduccion a la FGU", "secc": "421", "dias": "AJ", "hora": "0700-0829", "profesor": "TLALPAN-RUIZ MARIA GUADALUPE", "semestre": "1er Semestre"},
+    {"nrc": "40112", "clave": "FGMA 004", "materia": "Ingles I", "secc": "422", "dias": "LM", "hora": "0700-0859", "profesor": "GONZALEZ-VALERDI YESENIA", "semestre": "1er Semestre"},
+    {"nrc": "56329", "clave": "PSIA 007", "materia": "Psicobiologia I", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "LOPEZ-CORTES VICENTE ARTURO", "semestre": "1er Semestre"},
+    {"nrc": "56349", "clave": "PSIA 001", "materia": "Teorias de la Personalidad", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "SANCHEZ - ALONSO LUIS FERNANDO", "semestre": "1er Semestre"},
+    {"nrc": "56492", "clave": "PSIA 002", "materia": "Historia de la Psicologia", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "1er Semestre"},
+    {"nrc": "56525", "clave": "PSIA 008", "materia": "Psi. del Desarrollo Humano I", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "CANTERO - ANGULO MARIA DEL PILAR", "semestre": "1er Semestre"},
+    {"nrc": "56616", "clave": "PSIA 017", "materia": "Epistemologia y Psicologia", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "PEREZ - XOCHIPA MARCO POLO", "semestre": "1er Semestre"},
+    {"nrc": "56622", "clave": "PSIA 018", "materia": "T.Lec. Redaccion Textos Disc.", "secc": "001", "dias": "V", "hora": "0900-1259", "profesor": "HERNANDEZ- RODRIGUEZ GUADALUPE LOURDE", "semestre": "1er Semestre"},
+    {"nrc": "56440", "clave": "PSIA 001", "materia": "Teorias de la Personalidad", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "RODRIGUEZ - CASTILLO KARINA", "semestre": "1er Semestre"},
+    {"nrc": "56506", "clave": "PSIA 002", "materia": "Historia de la Psicologia", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "1er Semestre"},
+    {"nrc": "56518", "clave": "FGMA 001", "materia": "Introduccion a la FGU", "secc": "422", "dias": "AJ", "hora": "1500-1629", "profesor": "ROMERO-HORAN MARIA GUILLERMINA", "semestre": "1er Semestre"},
+    {"nrc": "56538", "clave": "PSIA 008", "materia": "Psi. del Desarrollo Humano I", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "CANTERO - ANGULO MARIA DEL PILAR", "semestre": "1er Semestre"},
+    {"nrc": "56605", "clave": "PSIA 007", "materia": "Psicobiologia I", "secc": "002", "dias": "LM", "hora": "1900-2059", "profesor": "GARCIA - FLORES MARCO ANTONIO", "semestre": "1er Semestre"},
+    {"nrc": "56620", "clave": "PSIA 017", "materia": "Epistemologia y Psicologia", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "SANCHEZ - ALONSO LUIS FERNANDO", "semestre": "1er Semestre"},
+    {"nrc": "56624", "clave": "PSIA 018", "materia": "T.Lec. Redaccion Textos Disc.", "secc": "002", "dias": "V", "hora": "1300-1659", "profesor": "SANCHEZ-CID JOSE ELIAS", "semestre": "1er Semestre"},
+    {"nrc": "56657", "clave": "FGMA 004", "materia": "Ingles I", "secc": "421", "dias": "AJ", "hora": "1900-2059", "profesor": "HERNANDEZ - CASIANO OSCAR", "semestre": "1er Semestre"},
 
-    # --- SEGUNDO SEMESTRE ---
-    {"nrc": "20101", "clave": "PSI-201", "materia": "Procesos Psicológicos Básicos", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "HERNANDEZ MAZA RAUL", "semestre": "2° Semestre"},
-    {"nrc": "20102", "clave": "PSI-202", "materia": "Neuroanatomía Funcional", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "GOMEZ ALVAREZ ALBERTO", "semestre": "2° Semestre"},
-    {"nrc": "20103", "clave": "PSI-203", "materia": "Estadística Descriptiva", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "LOPEZ PACHECO MARÍA", "semestre": "2° Semestre"},
-    {"nrc": "20104", "clave": "FGUS-002", "materia": "Desarrollo de Habilidades del Pensamiento", "secc": "402", "dias": "AJ", "hora": "1300-1459", "profesor": "SÁNCHEZ LARA DIEGO", "semestre": "2° Semestre"},
+    # --- 2do SEMESTRE ---
+    {"nrc": "56766", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "ARCE - MUNOZ MOHAMED", "semestre": "2do Semestre"},
+    {"nrc": "56851", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MARTINEZ-VELAZQUEZ EDUARDO SALVADOR", "semestre": "2do Semestre"},
+    {"nrc": "56880", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "BECERRA - ALLENDE JORGE FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "56916", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "001", "dias": "AJ", "hora": "0700-0859", "profesor": "PEREZ BARROSO MARLENE", "semestre": "2do Semestre"},
+    {"nrc": "57083", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "SILVARIOS CARLOS ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "57127", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "2do Semestre"},
+    {"nrc": "61668", "clave": "FGMA 005", "materia": "Ingles II", "secc": "426", "dias": "LM", "hora": "0700-0859", "profesor": "SIN ASIGNAR", "semestre": "2do Semestre"},
+    {"nrc": "56740", "clave": "FGMA 005", "materia": "Ingles II", "secc": "422", "dias": "AJ", "hora": "1900-2059", "profesor": "REYES-OSORIO MARIA ISABEL", "semestre": "2do Semestre"},
+    {"nrc": "56775", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "ROJAS HERNANDEZ GUADALUPE JANET", "semestre": "2do Semestre"},
+    {"nrc": "56885", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "BECERRA-ALLENDE JORGE FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "56922", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "OREA - HERNANDEZ RICARDO ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "57091", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "57134", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "DURAN - SORIANO MARIA DEL ROSIO", "semestre": "2do Semestre"},
+    {"nrc": "59416", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "002", "dias": "LM", "hora": "1900-2059", "profesor": "OREA - HERNANDEZ RICARDO ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "56696", "clave": "FGMA 005", "materia": "Ingles II", "secc": "423", "dias": "AJ", "hora": "0900-1059", "profesor": "BARRIENTOS - CANTORAN LUCIA", "semestre": "2do Semestre"},
+    {"nrc": "56807", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "003", "dias": "LM", "hora": "0900-1059", "profesor": "ARCE - MUNOZ MOHAMED", "semestre": "2do Semestre"},
+    {"nrc": "56861", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "003", "dias": "LM", "hora": "1300-1459", "profesor": "PEREZ-BARROSO MARLENE", "semestre": "2do Semestre"},
+    {"nrc": "56892", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "003", "dias": "LM", "hora": "1100-1259", "profesor": "BERRABORTOLOTTI MARIA JUANA", "semestre": "2do Semestre"},
+    {"nrc": "56928", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "003", "dias": "AJ", "hora": "0700-0859", "profesor": "DIAZ-CARDENAS ALFONSO FELIPE", "semestre": "2do Semestre"},
+    {"nrc": "57097", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "003", "dias": "AJ", "hora": "1100-1259", "profesor": "SILVARIOS CARLOS ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "57139", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "003", "dias": "LM", "hora": "0700-0859", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "56714", "clave": "FGMA 005", "materia": "Ingles II", "secc": "424", "dias": "AJ", "hora": "1500-1659", "profesor": "PIANTZI-VARELA LETICIA", "semestre": "2do Semestre"},
+    {"nrc": "56814", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "004", "dias": "LM", "hora": "1500-1659", "profesor": "RODRIGUEZ - CASTILLO KARINA", "semestre": "2do Semestre"},
+    {"nrc": "56864", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "004", "dias": "AJ", "hora": "1300-1459", "profesor": "PEREZ - BARROSO MARLENE", "semestre": "2do Semestre"},
+    {"nrc": "56896", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "004", "dias": "LM", "hora": "1700-1859", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "2do Semestre"},
+    {"nrc": "56930", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "004", "dias": "LM", "hora": "1900-2059", "profesor": "RAMOS PEREZ CECILIA", "semestre": "2do Semestre"},
+    {"nrc": "57104", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "004", "dias": "AJ", "hora": "1900-2059", "profesor": "MARTINEZ - MENDEZ DULCE MARIA", "semestre": "2do Semestre"},
+    {"nrc": "57155", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "004", "dias": "AJ", "hora": "1700-1859", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "2do Semestre"},
+    {"nrc": "56720", "clave": "FGMA 005", "materia": "Ingles II", "secc": "425", "dias": "LM", "hora": "0700-0859", "profesor": "ISIDRO DE JESUS JACOBO", "semestre": "2do Semestre"},
+    {"nrc": "56836", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "005", "dias": "LM", "hora": "0900-1059", "profesor": "TENORIO - MARTINEZ ROSALIA", "semestre": "2do Semestre"},
+    {"nrc": "56867", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "005", "dias": "AJ", "hora": "1100-1259", "profesor": "PEREZ - BARROSO MARLENE", "semestre": "2do Semestre"},
+    {"nrc": "56901", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "005", "dias": "AJ", "hora": "0900-1059", "profesor": "CANTERO - ANGULO MARIA DEL PILAR", "semestre": "2do Semestre"},
+    {"nrc": "56933", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "005", "dias": "LM", "hora": "1300-1459", "profesor": "RAMOS PEREZ CECILIA", "semestre": "2do Semestre"},
+    {"nrc": "57113", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "005", "dias": "AJ", "hora": "0700-0859", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "57163", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "005", "dias": "LM", "hora": "1100-1259", "profesor": "PEREZ - XOCHIPA MARCO POLO", "semestre": "2do Semestre"},
+    {"nrc": "56841", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "006", "dias": "LM", "hora": "1500-1659", "profesor": "ARCE - MUNOZ MOHAMED", "semestre": "2do Semestre"},
+    {"nrc": "56871", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "006", "dias": "AJ", "hora": "1300-1459", "profesor": "OREA - HERNANDEZ RICARDO ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "56906", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "006", "dias": "AJ", "hora": "1500-1659", "profesor": "CANTERO - ANGULO MARIA DEL PILAR", "semestre": "2do Semestre"},
+    {"nrc": "56936", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "006", "dias": "AJ", "hora": "1700-1859", "profesor": "RAMOS-PEREZ CECILIA", "semestre": "2do Semestre"},
+    {"nrc": "57117", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "006", "dias": "V", "hora": "1300-1659", "profesor": "MARTINEZ - MENDEZ DULCE MARIA", "semestre": "2do Semestre"},
+    {"nrc": "57171", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "006", "dias": "LM", "hora": "1700-1859", "profesor": "PEREZ - XOCHIPA MARCO POLO", "semestre": "2do Semestre"},
+    {"nrc": "56753", "clave": "FGMA 005", "materia": "Ingles II", "secc": "427", "dias": "LM", "hora": "0700-0859", "profesor": "ALCARAZ-BARRIOS MARISOL", "semestre": "2do Semestre"},
+    {"nrc": "56845", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "007", "dias": "LM", "hora": "0900-1059", "profesor": "RODRIGUEZ-CASTILLO KARINA", "semestre": "2do Semestre"},
+    {"nrc": "56873", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "007", "dias": "LM", "hora": "1100-1259", "profesor": "HERNANDEZ-RODRIGUEZ GUADALUPE LOURDES", "semestre": "2do Semestre"},
+    {"nrc": "56910", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "007", "dias": "LM", "hora": "1300-1459", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "2do Semestre"},
+    {"nrc": "56938", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "007", "dias": "AJ", "hora": "1100-1259", "profesor": "OREA - HERNANDEZ RICARDO ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "57119", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "007", "dias": "AJ", "hora": "0900-1059", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "57175", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "007", "dias": "AJ", "hora": "0700-0859", "profesor": "RODRIGUEZ-MARTINEZ RICARDO ALEJANDRO", "semestre": "2do Semestre"},
+    {"nrc": "56759", "clave": "FGMA 005", "materia": "Ingles II", "secc": "428", "dias": "LM", "hora": "1900-2059", "profesor": "REYES-OSORIO MARIA ISABEL", "semestre": "2do Semestre"},
+    {"nrc": "57738", "clave": "PSIA 003", "materia": "Psicopatologia General", "secc": "008", "dias": "LM", "hora": "1700-1859", "profesor": "SANCHEZ - ALONSO LUIS FERNANDO", "semestre": "2do Semestre"},
+    {"nrc": "57741", "clave": "PSIA 009", "materia": "Psicobiologia II", "secc": "008", "dias": "LM", "hora": "1500-1659", "profesor": "OREA - HERNANDEZ RICARDO ENRIQUE", "semestre": "2do Semestre"},
+    {"nrc": "57746", "clave": "PSIA 010", "materia": "Psi. del Desarrollo Humano II", "secc": "008", "dias": "AJ", "hora": "1300-1459", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "2do Semestre"},
+    {"nrc": "57752", "clave": "PSIA 011", "materia": "Psicologia Cognitiva", "secc": "008", "dias": "AJ", "hora": "1500-1659", "profesor": "RAMOS PEREZ CECILIA", "semestre": "2do Semestre"},
+    {"nrc": "57761", "clave": "PSIA 019", "materia": "Teorias en Psicologia Social I", "secc": "008", "dias": "AJ", "hora": "1700-1859", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "2do Semestre"},
+    {"nrc": "57766", "clave": "PSIA 020", "materia": "Psicologia y Comunicacion", "secc": "008", "dias": "AJ", "hora": "1900-2059", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "2do Semestre"},
 
-    # --- TERCER SEMESTRE ---
-    {"nrc": "40108", "clave": "FGUS-006", "materia": "Lengua Extranjera III", "secc": "421", "dias": "AJ", "hora": "0700-0859", "profesor": "ORTEGA-CASTILLO KARINA", "semestre": "3° Semestre"},
-    {"nrc": "40252", "clave": "FGUS-001", "materia": "Formacion Humana y Social", "secc": "421", "dias": "LM", "hora": "0900-1059", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "3° Semestre"},
-    {"nrc": "56817", "clave": "PSIS-012", "materia": "Teorias del Aprendizaje", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BENAVIDES - VALDERRABANO MARICELA", "semestre": "3° Semestre"},
-    {"nrc": "56827", "clave": "PSIS-013", "materia": "Psi.del Desarrollo Humano III", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "3° Semestre"},
-    {"nrc": "56833", "clave": "PSIS-014", "materia": "Psicopatologia Interaccional", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
-    {"nrc": "56837", "clave": "PSIS-015", "materia": "Teorias de los Sistemas Ciber", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
-    {"nrc": "56849", "clave": "PSIS-016", "materia": "Teor. en Psicologia Social II", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "HERNANDEZ - ESCOBAR VERONICA", "semestre": "3° Semestre"},
-    {"nrc": "56876", "clave": "PSIS-012", "materia": "Teorias del Aprendizaje", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "3° Semestre"},
-    {"nrc": "56881", "clave": "PSIS-013", "materia": "Psi.del Desarrollo Humano III", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "CANTERO-ANGULO MARIA DEL PILAR", "semestre": "3° Semestre"},
-    {"nrc": "56884", "clave": "PSIS-014", "materia": "Psicopatologia Interaccional", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "RODRIGUEZ - SANCHEZ JOSE LUIS", "semestre": "3° Semestre"},
-    {"nrc": "56887", "clave": "PSIS-015", "materia": "Teorias de los Sistemas Ciber", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
-    {"nrc": "56895", "clave": "PSIS-016", "materia": "Teor. en Psicologia Social II", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "MARTINEZ MENDEZ DULCE MARIA", "semestre": "3° Semestre"},
+    # --- 3er SEMESTRE ---
+    {"nrc": "40108", "clave": "FGUS 006", "materia": "Lengua Extranjera III", "secc": "421", "dias": "AJ", "hora": "0700-0859", "profesor": "ORTEGA-CASTILLO KARINA", "semestre": "3er Semestre"},
+    {"nrc": "40252", "clave": "FGUS 001", "materia": "Formacion Humana y Social", "secc": "421", "dias": "LM", "hora": "0900-1059", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "3er Semestre"},
+    {"nrc": "56817", "clave": "PSIS 012", "materia": "Teorias del Aprendizaje", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BENAVIDES - VALDERRABANO MARICELA", "semestre": "3er Semestre"},
+    {"nrc": "56827", "clave": "PSIS 013", "materia": "Psi.del Desarrollo Humano III", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "3er Semestre"},
+    {"nrc": "56833", "clave": "PSIS 014", "materia": "Psicopatologia Interaccional", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3er Semestre"},
+    {"nrc": "56837", "clave": "PSIS 015", "materia": "Teorias de los Sistemas Ciber", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3er Semestre"},
+    {"nrc": "56849", "clave": "PSIS 016", "materia": "Teor. en Psicologia Social II", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "HERNANDEZ - ESCOBAR VERONICA", "semestre": "3er Semestre"},
+    {"nrc": "56876", "clave": "PSIS 012", "materia": "Teorias del Aprendizaje", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "3er Semestre"},
+    {"nrc": "56881", "clave": "PSIS 013", "materia": "Psi.del Desarrollo Humano III", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "CANTERO-ANGULO MARIA DEL PILAR", "semestre": "3er Semestre"},
+    {"nrc": "56884", "clave": "PSIS 014", "materia": "Psicopatologia Interaccional", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "RODRIGUEZ - SANCHEZ JOSE LUIS", "semestre": "3er Semestre"},
+    {"nrc": "56887", "clave": "PSIS 015", "materia": "Teorias de los Sistemas Ciber", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3er Semestre"},
+    {"nrc": "56895", "clave": "PSIS 016", "materia": "Teor. en Psicologia Social II", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "MARTINEZ MENDEZ DULCE MARIA", "semestre": "3er Semestre"},
+    {"nrc": "56900", "clave": "FGUS 001", "materia": "Formacion Humana y Social", "secc": "422", "dias": "LM", "hora": "1900-2059", "profesor": "CHAVEZ-GONZALEZ ERIKA", "semestre": "3er Semestre"},
+    {"nrc": "56907", "clave": "FGUS 006", "materia": "Lengua Extranjera III", "secc": "422", "dias": "AJ", "hora": "1900-2059", "profesor": "DIAZ-CARREON GRACIELA", "semestre": "3er Semestre"},
 
-    # --- CUARTO SEMESTRE ---
-    {"nrc": "40101", "clave": "PSI-401", "materia": "Psicometría Teórica", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "CABELLO ROSARIO", "semestre": "4° Semestre"},
-    {"nrc": "40102", "clave": "PSI-402", "materia": "Métodos de Investigación Cualitativa", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "FLORES JAVIER", "semestre": "4° Semestre"},
-    {"nrc": "40103", "clave": "PSI-403", "materia": "Evaluación Psicológica Infantil", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "RUIZ GUTIERREZ ROSA", "semestre": "4° Semestre"},
-    {"nrc": "40104", "clave": "PSI-404", "materia": "Psicología Social Avanzada", "secc": "001", "dias": "AJ", "hora": "1300-1459", "profesor": "TIRADO SANCHEZ JUAN", "semestre": "4° Semestre"},
-
-    # --- QUINTO SEMESTRE ---
-    {"nrc": "50101", "clave": "PSI-501", "materia": "Entrevista Psicopedagógica", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MEZA ARROYO CONCEPCION", "semestre": "5° Semestre"},
-    {"nrc": "50102", "clave": "PSI-502", "materia": "Psicopatología del Adulto", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "VALENCIA ROJAS ARTURO", "semestre": "5° Semestre"},
-    {"nrc": "50103", "clave": "PSI-503", "materia": "Diseño de Instrumentos de Medición", "secc": "001", "dias": "LM", "hora": "1500-1659", "profesor": "SORREL GONZALO", "semestre": "5° Semestre"},
-
-    # --- SEXTO SEMESTRE ---
-    {"nrc": "60101", "clave": "PSI-601", "materia": "Terapia Cognitivo Conductual (TCC)", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BECK AARON", "semestre": "6° Semestre"},
-    {"nrc": "60102", "clave": "PSI-602", "materia": "Evaluación del Talento Humano", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "CHIAVENATO IDALBERTO", "semestre": "6° Semestre"},
-    {"nrc": "60103", "clave": "PSI-603", "materia": "Psicología Dinámica de Grupos", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "LEWIN KURT", "semestre": "6° Semestre"},
-
-    # --- SÉPTIMO SEMESTRE ---
-    {"nrc": "70101", "clave": "PSI-701", "materia": "Ética Profesional en Psicología", "secc": "001", "dias": "AJ", "hora": "0700-0859", "profesor": "KANT IMMANUEL", "semestre": "7° Semestre"},
-    {"nrc": "70102", "clave": "PSI-702", "materia": "Técnicas de Intervención Grupal", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "PERLS FRITZ", "semestre": "7° Semestre"},
-
-    # --- OCTAVO SEMESTRE ---
-    {"nrc": "80101", "clave": "PSI-801", "materia": "Diseño de Proyectos de Tesis", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "HERNANDEZ SAMPIERI ROBERTO", "semestre": "8° Semestre"},
-    {"nrc": "80102", "clave": "PSI-802", "materia": "Psicofarmacología Clínica", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "SALAZAR VILLARREAL LUIS", "semestre": "8° Semestre"},
-
-    # --- NOVENO SEMESTRE ---
-    {"nrc": "90111", "clave": "PSI-901", "materia": "Prácticas Profesionales Supervisoras I", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "PALACIOS LUNA ROCIO", "semestre": "9° Semestre"},
-    {"nrc": "90112", "clave": "PSI-902", "materia": "Seminario de Integración de Casos", "secc": "001", "dias": "AJ", "hora": "1500-1659", "profesor": "RODRIGUEZ REYES MAURO", "semestre": "9° Semestre"},
-
-    # --- DÉCIMO SEMESTRE ---
-    {"nrc": "10011", "clave": "PSI-1001", "materia": "Prácticas Profesionales Supervisoras II", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "PALACIOS LUNA ROCIO", "semestre": "10° Semestre"},
-    {"nrc": "10012", "clave": "PSI-1002", "materia": "Deontología y Práctica Legal", "secc": "001", "dias": "AJ", "hora": "1300-1459", "profesor": "BARRAZA MEZA ABRAHAM", "semestre": "10° Semestre"},
-
-    # --- MATERIAS OPTATIVAS (SÓLO ACCESIBLES DESDE 7° A 10°) ---
-    # Clínica
-    {"nrc": "99101", "clave": "OPT-CLIN1", "materia": "Psicoterapia Humanista Existencial", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "ROGERS CARL", "semestre": "Optativa - Clínica"},
-    {"nrc": "99102", "clave": "OPT-CLIN2", "materia": "Modelos de Terapia Sistémica", "secc": "001", "dias": "AJ", "hora": "1700-1859", "profesor": "MINUCHIN SALVADOR", "semestre": "Optativa - Clínica"},
-    # Educativa
-    {"nrc": "99201", "clave": "OPT-EDU1", "materia": "Problemas de Aprendizaje Temprano", "secc": "001", "dias": "AJ", "hora": "1500-1659", "profesor": "VYGOTSKY LEV", "semestre": "Optativa - Educativa"},
-    {"nrc": "99202", "clave": "OPT-EDU2", "materia": "Orientación Vocacional y Prof.", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "HOLLAND JOHN", "semestre": "Optativa - Educativa"},
-    # Organizacional
-    {"nrc": "99301", "clave": "OPT-ORG1", "materia": "Estrategias de Outplacement Efectivo", "secc": "001", "dias": "LM", "hora": "1500-1659", "profesor": "MARISTANY LUIS", "semestre": "Optativa - Organizacional"},
-    {"nrc": "99302", "clave": "OPT-ORG2", "materia": "Auditoría de Competencias Laborales", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "ALLES MARTHA", "semestre": "Optativa - Organizacional"},
-    # Social
-    {"nrc": "99401", "clave": "OPT-SOC1", "materia": "Psicología Comunitaria Contemporánea", "secc": "001", "dias": "AJ", "hora": "1700-1859", "profesor": "MONTERO MARITZA", "semestre": "Optativa - Social"},
-    {"nrc": "99402", "clave": "OPT-SOC2", "materia": "Análisis de Conflictos Colectivos", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MOSCOVICI SERGE", "semestre": "Optativa - Social"}
+    # --- 4to SEMESTRE ---
+    {"nrc": "40109", "clave": "FGUS 007", "materia": "Lengua Extranjera IV", "secc": "421", "dias": "AJ", "hora": "0900-1059", "profesor": "ORTEGACASTILLO KARINA", "semestre": "4to Semestre"},
+    {"nrc": "56915", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "PEREZ - BARROSO MARLENE", "semestre": "4to Semestre"},
+    {"nrc": "56927", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "ROJAS - HERNANDEZ GUADALUPE JANET", "semestre": "4to Semestre"},
+    {"nrc": "56931", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "VAZQUEZ-CASTELLANOS ARMANDO", "semestre": "4to Semestre"},
+    {"nrc": "57116", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "4to Semestre"},
+    {"nrc": "57123", "clave": "PSIS 021", "materia": "Inv. I: Planteamiento del Pro.", "secc": "001", "dias": "V", "hora": "0700-1059", "profesor": "GARCIA AGUILAR GREGORIO", "semestre": "4to Semestre"},
+    {"nrc": "57129", "clave": "PSIS 022", "materia": "Intro. a la Psi.Organizacional", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "CARRO - MEZA DULCE CAROLINA", "semestre": "4to Semestre"},
+    {"nrc": "57149", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "RAMOS-PEREZ CECILIA", "semestre": "4to Semestre"},
+    {"nrc": "57162", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "ARCE-MUNOZ MOHAMED", "semestre": "4to Semestre"},
+    {"nrc": "57202", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "VAZQUEZ-CASTELLANOS ARMANDO", "semestre": "4to Semestre"},
+    {"nrc": "57207", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "HUERTA-RAMIREZ FEDERICO", "semestre": "4to Semestre"},
+    {"nrc": "57219", "clave": "PSIS 021", "materia": "Inv. I: Planteamiento del Pro.", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "CHAVEZ-GONZALEZ ERIKA", "semestre": "4to Semestre"},
+    {"nrc": "57227", "clave": "PSIS 022", "materia": "Intro. a la Psi. Organizacional", "secc": "002", "dias": "AJ", "hora": "1900-2059", "profesor": "TAPIA - LOPEZ SANDRA LUCIA", "semestre": "4to Semestre"},
+    {"nrc": "57252", "clave": "FGUS 007", "materia": "Lengua Extranjera IV", "secc": "422", "dias": "LM", "hora": "1900-2059", "profesor": "HERNANDEZ - CASIANO OSCAR", "semestre": "4to Semestre"},
+    {"nrc": "57263", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "003", "dias": "LM", "hora": "0900-1059", "profesor": "PEREZ-BARROSO MARLENE", "semestre": "4to Semestre"},
+    {"nrc": "57267", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "003", "dias": "LM", "hora": "0700-0859", "profesor": "ROJAS-HERNANDEZ GUADALUPE JANET", "semestre": "4to Semestre"},
+    {"nrc": "57273", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "003", "dias": "LM", "hora": "1100-1259", "profesor": "ROJAS - HERNANDEZ GUADALUPE JANET", "semestre": "4to Semestre"},
+    {"nrc": "57520", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "003", "dias": "LM", "hora": "1300-1459", "profesor": "MARTINEZ - MENDEZ DULCE MARIA", "semestre": "4to Semestre"},
+    {"nrc": "57522", "clave": "PSIS 021", "materia": "Inv. I: Planteamiento del Pro.", "secc": "003", "dias": "AJ", "hora": "1100-1259", "profesor": "SANCHEZ-CID JOSE ELIAS", "semestre": "4to Semestre"},
+    {"nrc": "57524", "clave": "PSIS 022", "materia": "Intro. a la Psi.Organizacional", "secc": "003", "dias": "AJ", "hora": "0900-1059", "profesor": "MERCADO CARNALLA MARIO RENATO", "semestre": "4to Semestre"},
+    {"nrc": "57529", "clave": "FGUS 007", "materia": "Lengua Extranjera IV", "secc": "423", "dias": "AJ", "hora": "0700-0859", "profesor": "GONZALEZ - VALERDI YESENIA", "semestre": "4to Semestre"},
+    {"nrc": "57539", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "004", "dias": "AJ", "hora": "1300-1459", "profesor": "GALINDO-MOTO MANUEL ALEJANDRO", "semestre": "4to Semestre"},
+    {"nrc": "57537", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "004", "dias": "LM", "hora": "1700-1859", "profesor": "RAMOS PEREZ CECILIA", "semestre": "4to Semestre"},
+    {"nrc": "57542", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "004", "dias": "LM", "hora": "1900-2059", "profesor": "ARCE - MUNOZ MOHAMED", "semestre": "4to Semestre"},
+    {"nrc": "57543", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "004", "dias": "LM", "hora": "1500-1659", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "4to Semestre"},
+    {"nrc": "57545", "clave": "PSIS 021", "materia": "Inv. I: Planteamiento del Pro.", "secc": "004", "dias": "AJ", "hora": "1900-2059", "profesor": "CHAVEZ-GONZALEZ ERIKA", "semestre": "4to Semestre"},
+    {"nrc": "57549", "clave": "PSIS 022", "materia": "Intro. a la Psi.Organizacional", "secc": "004", "dias": "AJ", "hora": "1700-1859", "profesor": "TAPIA - LOPEZ SANDRA LUCIA", "semestre": "4to Semestre"},
+    {"nrc": "57551", "clave": "FGUS 007", "materia": "Lengua Extranjera IV", "secc": "424", "dias": "AJ", "hora": "1500-1659", "profesor": "MARTINEZ - ARENALDE CESAR", "semestre": "4to Semestre"},
+    {"nrc": "57555", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "005", "dias": "LM", "hora": "0900-1059", "profesor": "HERNANDEZ - RODRIGUEZ GUADALUPE LOURDES", "semestre": "4to Semestre"},
+    {"nrc": "57558", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "005", "dias": "LM", "hora": "1300-1459", "profesor": "ROJAS-HERNANDEZ GUADALUPE JANET", "semestre": "4to Semestre"},
+    {"nrc": "57562", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "005", "dias": "LM", "hora": "1100-1259", "profesor": "BRAMBILA - LOPEZ TERESITA", "semestre": "4to Semestre"},
+    {"nrc": "57567", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "005", "dias": "LM", "hora": "0700-0859", "profesor": "RODRIGUEZ - MARTINEZ RICARDO ALEJANDRO", "semestre": "4to Semestre"},
+    {"nrc": "57569", "clave": "PSIS 021", "materia": "Inv. I: Planteamiento del Pro.", "secc": "005", "dias": "AJ", "hora": "1100-1259", "profesor": "MARTINEZ - MENDEZ DULCE MARIA", "semestre": "4to Semestre"},
+    {"nrc": "57614", "clave": "PSIS 022", "materia": "Intro. a la Psi. Organizacional", "secc": "005", "dias": "AJ", "hora": "0900-1059", "profesor": "TLALPAN-RUIZ MARIA GUADALUPE", "semestre": "4to Semestre"},
+    {"nrc": "57619", "clave": "FGUS 007", "materia": "Lengua Extranjera IV", "secc": "425", "dias": "AJ", "hora": "0700-0859", "profesor": "SERRANO - RAMIREZ ANA LUCIA", "semestre": "4to Semestre"},
+    {"nrc": "57631", "clave": "PSIS 017", "materia": "Pruebas de Inteligencia", "secc": "006", "dias": "AJ", "hora": "1900-2059", "profesor": "RAMOS PEREZ CECILIA", "semestre": "4to Semestre"},
+    {"nrc": "57639", "clave": "PSIS 018", "materia": "Sexualidad", "secc": "006", "dias": "AJ", "hora": "1300-1459", "profesor": "LUNA-PEREZ PERLA WENDOLINE", "semestre": "4to Semestre"},
+    {"nrc": "57645", "clave": "PSIS 019", "materia": "Fund. de la Psicoterapia", "secc": "006", "dias": "LM", "hora": "1900-2059", "profesor": "LUNA-PEREZ PERLA WENDOLINE", "semestre": "4to Semestre"},
+    {"nrc": "57652", "clave": "PSIS 020", "materia": "Psicologia de los Grupos", "secc": "006", "dias": "AJ", "hora": "1700-1859", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "4to Semestre"}
 ]
 
+# =========================================================================
+# ⚙️ MOTOR ALGORÍTMICO Y LOGICA DEL GENERADOR
+# =========================================================================
 def parse_hora(hora_str):
     inicio, fin = hora_str.split('-')
     return int(inicio), int(fin)
@@ -154,120 +216,70 @@ def generar_horario_estricto(lista_materias, profesores_prioritarios, lm_ini, lm
                     prioridad_completa = False; break
             return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, ""
 
-    return None, False, materias_omitidas, omitidas_prof_unico, "No se encontró una combinación sin traslapes para los filtros dados."
+    return None, False, materias_omitidas, omitidas_prof_unico, "No se encontró una combinación válida sin traslapes."
 
-# --- CONFIGURACIÓN DE INTERFAZ ---
-st.set_page_config(page_title="Generador de Horarios Universitario", layout="wide", page_icon="🗓️")
+# --- CONFIGURACIÓN DE STREAMLIT ---
+st.set_page_config(page_title="Generador de Horarios Oficial", layout="wide", page_icon="🗓️")
 
-# --- BARRA LATERAL (SIDEBAR): FILTROS ---
-st.sidebar.title("🛠️ Configuración del Horario")
+# --- BARRA LATERAL (SIDEBAR) ---
+st.sidebar.title("🛠️ Filtros de Control")
 
-# SELECTOR DE SEMESTRES ACTUALIZADO DE 1° A 10°
-MAPA_SEMESTRES = {
-    "1° Semestre": 1, "2° Semestre": 2, "3° Semestre": 3, "4° Semestre": 4, 
-    "5° Semestre": 5, "6° Semestre": 6, "7° Semestre": 7, "8° Semestre": 8, 
-    "9° Semestre": 9, "10° Semestre": 10
-}
-semestre_seleccionado = st.sidebar.selectbox("📆 Selecciona tu Semestre:", list(MAPA_SEMESTRES.keys()), index=2)
-numero_semestre = MAPA_SEMESTRES[semestre_seleccionado]
+st.sidebar.subheader("Subir y Seleccionar Periodo")
+semestre_seleccionado = st.sidebar.selectbox(
+    "Selecciona tu semestre activo:",
+    ["1er Semestre", "2do Semestre", "3er Semestre", "4to Semestre"],
+    index=2  # Inicia por defecto en 3er semestre
+)
 
-# BLOQUEOS DE HORARIO
 st.sidebar.markdown("---")
-st.sidebar.subheader("🚫 Bloqueos de Horario")
-lm_inicio = st.sidebar.number_input("Inicio Lunes/Miércoles (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-lm_fin = st.sidebar.number_input("Fin Lunes/Miércoles (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-aj_inicio = st.sidebar.number_input("Inicio Martes/Jueves (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-aj_fin = st.sidebar.number_input("Fin Martes/Jueves (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+st.sidebar.subheader("🚫 Bloqueo: Lunes y Miércoles")
+lm_inicio = st.sidebar.number_input("Hora de Inicio LM (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+lm_fin = st.sidebar.number_input("Hora de Fin LM (HHMM)", min_value=0, max_value=2400, value=0, step=100)
 
-# PROFESORES PRIORITARIOS
+st.sidebar.markdown("---")
+st.sidebar.subheader("🚫 Bloqueo: Martes y Jueves")
+aj_inicio = st.sidebar.number_input("Hora de Inicio MA/JU (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+aj_fin = st.sidebar.number_input("Hora de Fin MA/JU (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+
 st.sidebar.markdown("---")
 st.sidebar.subheader("👤 Profesores Prioritarios")
 profesores_inputs = []
-for i in range(1, 6):
-    pref_name = st.sidebar.text_input(f"Docente Prioritario {i}", key=f"prof_{i}")
+for i in range(1, 9):
+    pref_name = st.sidebar.text_input(f"Docente Prioritario {i}", key=f"prof_{i}", placeholder="Ej. PEREZ-XOCHIPA")
     if pref_name.strip(): profesores_inputs.append(pref_name.strip())
 
-# --- NÚCLEO DE LA REGLA: MATERIAS OPTATIVAS CONDICIONADAS ---
-st.sidebar.markdown("---")
-st.sidebar.subheader("🎯 Módulo de Materias Optativas")
-
-optativas_seleccionadas = []
-
-if numero_semestre <= 6:
-    st.sidebar.info("🔒 Las materias optativas se habilitan a partir de **7° Semestre** de acuerdo al plan de estudios.")
-else:
-    st.sidebar.write("Selecciona las materias optativas que deseas cursar:")
-    opt_clinica = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Clínica"]
-    opt_educativa = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Educativa"]
-    opt_organizacional = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Organizacional"]
-    opt_social = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Social"]
-
-    with st.sidebar.expander("🧠 Área Clínica"):
-        for o in opt_clinica:
-            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
-    with st.sidebar.expander("🏫 Área Educativa"):
-        for o in opt_educativa:
-            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
-    with st.sidebar.expander("💼 Área Organizacional"):
-        for o in opt_organizacional:
-            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
-    with st.sidebar.expander("🌍 Área Social"):
-        for o in opt_social:
-            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
-
-# --- ENSAMBLADO Y ANÁLISIS DE CARGA DE MATERIAS (REGLA DE LÍMITE DE 8) ---
-materias_tronco_comun = [m for m in CATALOGO_MATERIAS if m['semestre'] == semestre_seleccionado]
-
-# Agrupamos las materias del tronco común por su clave para saber cuántas asignaturas base son realmente
-materias_unicas_tronco = len(set(m['clave'] for m in materias_tronco_comun))
-materias_unicas_optativas = len(set(m['clave'] for m in optativas_seleccionadas))
-total_materias_solicitadas = materias_unicas_tronco + materias_unicas_optativas
-
-banco_materias_final = materias_tronco_comun + optativas_seleccionadas
+# --- FILTRADO EN TIEMPO REAL POR SEMESTRE ---
+lista_materias_trabajo = [m for m in CATALOGO_MATERIAS if m['semestre'] == semestre_seleccionado]
 
 # --- CUERPO PRINCIPAL ---
-st.title("🗓️ Generador de Horarios Universitario Inteligente")
+st.title("🗓️ Generador de Horarios Dinámico y Prioritario")
 st.subheader(f"Esquema Activo: {semestre_seleccionado}")
 
-# Métrica de control del límite de carga
-col_m1, col_m2 = st.columns(2)
-with col_m1:
-    st.metric(label="Total de Asignaturas en Proceso", value=f"{total_materias_solicitadas} / 8")
-
-# VERIFICACIÓN DEL LÍMITE REQUERIDO
-if total_materias_solicitadas > 8:
-    st.error(f"🚨 **Carga Académica Excedida:** Has seleccionado un total de **{total_materias_solicitadas}** materias. El límite permitido por reglamento de la aplicación es de máximo **8 materias** cargadas en total. Desmarca alguna optativa para continuar.")
-    boton_deshabilitado = True
-else:
-    boton_deshabilitado = False
-
-if st.button("🎲 Calcular Horario Óptimo", type="primary", disabled=boton_deshabilitado):
-    if not banco_materias_final:
-        st.error("No hay materias cargadas en el catálogo de este semestre.")
+if st.button("🎲 Calcular Horario Óptimo", type="primary"):
+    if not lista_materias_trabajo:
+        st.warning(f"La base de datos para el **{semestre_seleccionado}** no contiene información.")
     else:
-        calendario, prioridad_cumplida, omitidas, omitidas_prof_unico, mensaje_error = generar_horario_estricto(
-            banco_materias_final, profesores_inputs, lm_inicio, lm_fin, aj_inicio, aj_fin
+        calendario, prioridad_cumplida, om, om_prof, err = generar_horario_estricto(
+            lista_materias_trabajo, profesores_inputs, lm_inicio, lm_fin, aj_inicio, aj_fin
         )
         
         if calendario:
-            if omitidas:
-                st.warning(f"⚠️ **Atención:** Para cumplir tus restricciones de tiempo, se omitieron: {', '.join(omitidas)}.")
-            if omitidas_prof_unico:
-                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(omitidas_prof_unico)}** se descartó porque el profesor prioritario (o único disponible) colisiona con tus bloqueos de hora.")
+            if om:
+                st.warning(f"⚠️ **Atención:** Para cumplir tus restricciones de tiempo, se omitieron: {', '.join(om)}.")
+            if om_prof:
+                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(om_prof)}** se omitió porque el profesor prioritario choca con tus bloqueos.")
 
             if len(profesores_inputs) > 0:
                 if prioridad_cumplida:
-                    st.balloons()
                     st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios.")
                 else:
-                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se integraron por restricciones horarias insalvables.")
+                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se incluyeron por cruce con horas bloqueadas.")
             else:
-                st.success("🎯 ¡Horario base estructurado correctamente!")
+                st.success("🎯 ¡Horario estructurado correctamente!")
 
-            # Matriz de Calendario Semanal
-            bloques_horas = ["0700-0859", "0900-1059", "1100-1259", "1300-1459", "1500-1659", "1700-1859", "1900-2059"]
-            dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
-            df_horario = pd.DataFrame("", index=bloques_horas, columns=dias_semana)
+            # Armar la matriz del horario semanal (Se normalizaron los bloques horarios más comunes)
+            bloques_horas = ["0700-0829", "0700-0859", "0900-1059", "1100-1259", "1300-1459", "1500-1629", "1500-1659", "1700-1859", "1900-2059"]
+            df_horario = pd.DataFrame("", index=bloques_horas, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
             
             for m in calendario:
                 info_celda = f"📚 {m['materia']} (Sec. {m['secc']})\n👤 {m['profesor']}\n[NRC: {m['nrc']}]"
@@ -275,23 +287,15 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary", disabled=boton_des
                 if 'M' in m['dias']: df_horario.at[m['hora'], "Miércoles"] = info_celda
                 if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
                 if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
+                if 'V' in m['dias']: df_horario.at[m['hora'], "Viernes"] = info_celda
 
             st.write("### 📅 Vista de Calendario Semanal")
-            st.markdown(
-                """
-                <style>
-                table { font-size: 13px !important; width: 100% !important; }
-                th { background-color: #1E3A8A !important; color: white !important; text-align: center !important; }
-                td { white-space: pre-line !important; height: 95px !important; vertical-align: top !important; background-color: #F8F9FA; border: 1px solid #D1D5DB !important; padding: 8px !important; }
-                </style>
-                """, 
-                unsafe_allow_html=True
-            )
+            st.markdown("<style>table { font-size: 13px !important; width: 100% !important; } th { background-color: #1E3A8A !important; color: white !important; } td { white-space: pre-line !important; height: 90px !important; vertical-align: top !important; background-color: #F8F9FA; border: 1px solid #D1D5DB !important; }</style>", unsafe_allow_html=True)
             st.table(df_horario)
             
             st.write("### 📝 Detalle del Horario Activo")
-            df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor', 'semestre']]
-            df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente', 'Semestre Origen']
+            df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor']]
+            df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente']
             st.dataframe(df_lista, use_container_width=True, hide_index=True)
         else:
-            st.error(mensaje_error)
+            st.error(err)
