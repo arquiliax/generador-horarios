@@ -2,45 +2,82 @@ import streamlit as st
 import random
 import pandas as pd
 
-# --- BASE DE DATOS GLOBAL MULTISEMESTRE Y OPTATIVAS ---
+# =========================================================================
+# 📚 BASE DE DATOS MATRICIAL: MAPA CURRICULAR COMPLETO (1° A 10° SEMESTRE)
+# =========================================================================
 CATALOGO_MATERIAS = [
-    # --- PRIMER SEMESTRE (Ejemplo Base) ---
-    {"nrc": "10001", "clave": "PSIS 001", "materia": "Introducción a la Psicología", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "GARCIA LOPEZ ANAMARIA", "semestre": "Primer Semestre"},
-    {"nrc": "10002", "clave": "FGUS 002", "materia": "Pensamiento Crítico", "secc": "421", "dias": "AJ", "hora": "0900-1059", "profesor": "ZAVALA RUIZ HUGO", "semestre": "Primer Semestre"},
-    
-    # --- TERCER SEMESTRE (Tu Tronco Común Actual) ---
-    {"nrc": "40108", "clave": "FGUS 006", "materia": "Lengua Extranjera III", "secc": "421", "dias": "AJ", "hora": "0700-0859", "profesor": "ORTEGA-CASTILLO KARINA", "semestre": "Tercer Semestre"},
-    {"nrc": "40252", "clave": "FGUS 001", "materia": "Formacion Humana y Social", "secc": "421", "dias": "LM", "hora": "0900-1059", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "Tercer Semestre"},
-    {"nrc": "56817", "clave": "PSIS 012", "materia": "Teorias del Aprendizaje", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BENAVIDES - VALDERRABANO MARICELA", "semestre": "Tercer Semestre"},
-    {"nrc": "56827", "clave": "PSIS 013", "materia": "Psi.del Desarrollo Humano III", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "Tercer Semestre"},
-    {"nrc": "56833", "clave": "PSIS 014", "materia": "Psicopatologia Interaccional", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "Tercer Semestre"},
-    {"nrc": "56837", "clave": "PSIS 015", "materia": "Teorias de los Sistemas Ciber", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "Tercer Semestre"},
-    {"nrc": "56849", "clave": "PSIS 016", "materia": "Teor. en Psicologia Social II", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "HERNANDEZ - ESCOBAR VERONICA", "semestre": "Tercer Semestre"},
-    
-    {"nrc": "56876", "clave": "PSIS 012", "materia": "Teorias del Aprendizaje", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "Tercer Semestre"},
-    {"nrc": "56881", "clave": "PSIS 013", "materia": "Psi.del Desarrollo Humano III", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "CANTERO-ANGULO MARIA DEL PILAR", "semestre": "Tercer Semestre"},
-    {"nrc": "56884", "clave": "PSIS 014", "materia": "Psicopatologia Interaccional", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "RODRIGUEZ - SANCHEZ JOSE LUIS", "semestre": "Tercer Semestre"},
-    {"nrc": "56887", "clave": "PSIS 015", "materia": "Teorias de los Sistemas Ciber", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "Tercer Semestre"},
-    {"nrc": "56895", "clave": "PSIS 016", "materia": "Teor. en Psicologia Social II", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "MARTINEZ MENDEZ DULCE MARIA", "semestre": "Tercer Semestre"},
-    {"nrc": "56900", "clave": "FGUS 001", "materia": "Formacion Humana y Social", "secc": "422", "dias": "LM", "hora": "1900-2059", "profesor": "CHAVEZ-GONZALEZ ERIKA", "semestre": "Tercer Semestre"},
-    {"nrc": "56907", "clave": "FGUS 006", "materia": "Lengua Extranjera III", "secc": "422", "dias": "AJ", "hora": "1900-2059", "profesor": "DIAZ-CARREON GRACIELA", "semestre": "Tercer Semestre"},
+    # --- PRIMER SEMESTRE ---
+    {"nrc": "10101", "clave": "PSI-101", "materia": "Epistemología de la Psicología", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "GONZALEZ SANCHEZ JORGE", "semestre": "1° Semestre"},
+    {"nrc": "10102", "clave": "PSI-101", "materia": "Epistemología de la Psicología", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "RAMIREZ MIRELES ANA", "semestre": "1° Semestre"},
+    {"nrc": "10103", "clave": "PSI-102", "materia": "Bases Biológicas de la Conducta", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MARTINEZ REYES LUIS", "semestre": "1° Semestre"},
+    {"nrc": "10104", "clave": "PSI-103", "materia": "Historia de la Psicología", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "CASTRO OLMOS ELENA", "semestre": "1° Semestre"},
+    {"nrc": "10105", "clave": "FGUS-001", "materia": "Formación Humana y Social", "secc": "401", "dias": "LM", "hora": "1300-1459", "profesor": "PEREZ RAMOS PEDRO", "semestre": "1° Semestre"},
 
-    # --- SECCIÓN: MATERIAS OPTATIVAS POR ÁREA ---
-    # Área Clínica
-    {"nrc": "90101", "clave": "OPT CLIN1", "materia": "Entrevista Clínica", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "BECK AARON", "semestre": "Optativa - Clínica"},
-    {"nrc": "90102", "clave": "OPT CLIN2", "materia": "Evaluación Psicométrica", "secc": "001", "dias": "AJ", "hora": "1500-1659", "profesor": "SORREL GONZALO", "semestre": "Optativa - Clínica"},
-    
-    # Área Educativa
-    {"nrc": "90201", "clave": "OPT EDU1", "materia": "Psicopedagogía de la Inclusión", "secc": "001", "dias": "AJ", "hora": "0700-0859", "profesor": "ROGERS CARL", "semestre": "Optativa - Educativa"},
-    {"nrc": "90202", "clave": "OPT EDU2", "materia": "Diseño de Programas Educativos", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "PIAGET JEAN", "semestre": "Optativa - Educativa"},
-    
-    # Área Organizacional
-    {"nrc": "90301", "clave": "OPT ORG1", "materia": "Gestión del Talento y Competencias", "secc": "001", "dias": "LM", "hora": "1500-1659", "profesor": "CHIAVENATO IDALBERTO", "semestre": "Optativa - Organizacional"},
-    {"nrc": "90302", "clave": "OPT ORG2", "materia": "Estrategias de Outplacement", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "MARISTANY LUIS", "semestre": "Optativa - Organizacional"},
-    
-    # Área Social
-    {"nrc": "90401", "clave": "OPT SOC1", "materia": "Psicología Comunitaria y de Campo", "secc": "001", "dias": "AJ", "hora": "1700-1859", "profesor": "MONTERO MARITZA", "semestre": "Optativa - Social"},
-    {"nrc": "90402", "clave": "OPT SOC2", "materia": "Intervención en Procesos Colectivos", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MOSCOVICI SERGE", "semestre": "Optativa - Social"}
+    # --- SEGUNDO SEMESTRE ---
+    {"nrc": "20101", "clave": "PSI-201", "materia": "Procesos Psicológicos Básicos", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "HERNANDEZ MAZA RAUL", "semestre": "2° Semestre"},
+    {"nrc": "20102", "clave": "PSI-202", "materia": "Neuroanatomía Funcional", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "GOMEZ ALVAREZ ALBERTO", "semestre": "2° Semestre"},
+    {"nrc": "20103", "clave": "PSI-203", "materia": "Estadística Descriptiva", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "LOPEZ PACHECO MARÍA", "semestre": "2° Semestre"},
+    {"nrc": "20104", "clave": "FGUS-002", "materia": "Desarrollo de Habilidades del Pensamiento", "secc": "402", "dias": "AJ", "hora": "1300-1459", "profesor": "SÁNCHEZ LARA DIEGO", "semestre": "2° Semestre"},
+
+    # --- TERCER SEMESTRE ---
+    {"nrc": "40108", "clave": "FGUS-006", "materia": "Lengua Extranjera III", "secc": "421", "dias": "AJ", "hora": "0700-0859", "profesor": "ORTEGA-CASTILLO KARINA", "semestre": "3° Semestre"},
+    {"nrc": "40252", "clave": "FGUS-001", "materia": "Formacion Humana y Social", "secc": "421", "dias": "LM", "hora": "0900-1059", "profesor": "PEREZ-XOCHIPA MARCO POLO", "semestre": "3° Semestre"},
+    {"nrc": "56817", "clave": "PSIS-012", "materia": "Teorias del Aprendizaje", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BENAVIDES - VALDERRABANO MARICELA", "semestre": "3° Semestre"},
+    {"nrc": "56827", "clave": "PSIS-013", "materia": "Psi.del Desarrollo Humano III", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "LIMATIZCARENO SILVIA CAROLINA", "semestre": "3° Semestre"},
+    {"nrc": "56833", "clave": "PSIS-014", "materia": "Psicopatologia Interaccional", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
+    {"nrc": "56837", "clave": "PSIS-015", "materia": "Teorias de los Sistemas Ciber", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
+    {"nrc": "56849", "clave": "PSIS-016", "materia": "Teor. en Psicologia Social II", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "HERNANDEZ - ESCOBAR VERONICA", "semestre": "3° Semestre"},
+    {"nrc": "56876", "clave": "PSIS-012", "materia": "Teorias del Aprendizaje", "secc": "002", "dias": "LM", "hora": "1500-1659", "profesor": "DURAN-SORIANO MARIA DEL ROSIO", "semestre": "3° Semestre"},
+    {"nrc": "56881", "clave": "PSIS-013", "materia": "Psi.del Desarrollo Humano III", "secc": "002", "dias": "AJ", "hora": "1700-1859", "profesor": "CANTERO-ANGULO MARIA DEL PILAR", "semestre": "3° Semestre"},
+    {"nrc": "56884", "clave": "PSIS-014", "materia": "Psicopatologia Interaccional", "secc": "002", "dias": "LM", "hora": "1700-1859", "profesor": "RODRIGUEZ - SANCHEZ JOSE LUIS", "semestre": "3° Semestre"},
+    {"nrc": "56887", "clave": "PSIS-015", "materia": "Teorias de los Sistemas Ciber", "secc": "002", "dias": "AJ", "hora": "1300-1459", "profesor": "AGUILAR-DAVILA YADIRA", "semestre": "3° Semestre"},
+    {"nrc": "56895", "clave": "PSIS-016", "materia": "Teor. en Psicologia Social II", "secc": "002", "dias": "AJ", "hora": "1500-1659", "profesor": "MARTINEZ MENDEZ DULCE MARIA", "semestre": "3° Semestre"},
+
+    # --- CUARTO SEMESTRE ---
+    {"nrc": "40101", "clave": "PSI-401", "materia": "Psicometría Teórica", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "CABELLO ROSARIO", "semestre": "4° Semestre"},
+    {"nrc": "40102", "clave": "PSI-402", "materia": "Métodos de Investigación Cualitativa", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "FLORES JAVIER", "semestre": "4° Semestre"},
+    {"nrc": "40103", "clave": "PSI-403", "materia": "Evaluación Psicológica Infantil", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "RUIZ GUTIERREZ ROSA", "semestre": "4° Semestre"},
+    {"nrc": "40104", "clave": "PSI-404", "materia": "Psicología Social Avanzada", "secc": "001", "dias": "AJ", "hora": "1300-1459", "profesor": "TIRADO SANCHEZ JUAN", "semestre": "4° Semestre"},
+
+    # --- QUINTO SEMESTRE ---
+    {"nrc": "50101", "clave": "PSI-501", "materia": "Entrevista Psicopedagógica", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MEZA ARROYO CONCEPCION", "semestre": "5° Semestre"},
+    {"nrc": "50102", "clave": "PSI-502", "materia": "Psicopatología del Adulto", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "VALENCIA ROJAS ARTURO", "semestre": "5° Semestre"},
+    {"nrc": "50103", "clave": "PSI-503", "materia": "Diseño de Instrumentos de Medición", "secc": "001", "dias": "LM", "hora": "1500-1659", "profesor": "SORREL GONZALO", "semestre": "5° Semestre"},
+
+    # --- SEXTO SEMESTRE ---
+    {"nrc": "60101", "clave": "PSI-601", "materia": "Terapia Cognitivo Conductual (TCC)", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "BECK AARON", "semestre": "6° Semestre"},
+    {"nrc": "60102", "clave": "PSI-602", "materia": "Evaluación del Talento Humano", "secc": "001", "dias": "AJ", "hora": "0900-1059", "profesor": "CHIAVENATO IDALBERTO", "semestre": "6° Semestre"},
+    {"nrc": "60103", "clave": "PSI-603", "materia": "Psicología Dinámica de Grupos", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "LEWIN KURT", "semestre": "6° Semestre"},
+
+    # --- SÉPTIMO SEMESTRE ---
+    {"nrc": "70101", "clave": "PSI-701", "materia": "Ética Profesional en Psicología", "secc": "001", "dias": "AJ", "hora": "0700-0859", "profesor": "KANT IMMANUEL", "semestre": "7° Semestre"},
+    {"nrc": "70102", "clave": "PSI-702", "materia": "Técnicas de Intervención Grupal", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "PERLS FRITZ", "semestre": "7° Semestre"},
+
+    # --- OCTAVO SEMESTRE ---
+    {"nrc": "80101", "clave": "PSI-801", "materia": "Diseño de Proyectos de Tesis", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "HERNANDEZ SAMPIERI ROBERTO", "semestre": "8° Semestre"},
+    {"nrc": "80102", "clave": "PSI-802", "materia": "Psicofarmacología Clínica", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "SALAZAR VILLARREAL LUIS", "semestre": "8° Semestre"},
+
+    # --- NOVENO SEMESTRE ---
+    {"nrc": "90111", "clave": "PSI-901", "materia": "Prácticas Profesionales Supervisoras I", "secc": "001", "dias": "LM", "hora": "0700-0859", "profesor": "PALACIOS LUNA ROCIO", "semestre": "9° Semestre"},
+    {"nrc": "90112", "clave": "PSI-902", "materia": "Seminario de Integración de Casos", "secc": "001", "dias": "AJ", "hora": "1500-1659", "profesor": "RODRIGUEZ REYES MAURO", "semestre": "9° Semestre"},
+
+    # --- DÉCIMO SEMESTRE ---
+    {"nrc": "10011", "clave": "PSI-1001", "materia": "Prácticas Profesionales Supervisoras II", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "PALACIOS LUNA ROCIO", "semestre": "10° Semestre"},
+    {"nrc": "10012", "clave": "PSI-1002", "materia": "Deontología y Práctica Legal", "secc": "001", "dias": "AJ", "hora": "1300-1459", "profesor": "BARRAZA MEZA ABRAHAM", "semestre": "10° Semestre"},
+
+    # --- MATERIAS OPTATIVAS (SÓLO ACCESIBLES DESDE 7° A 10°) ---
+    # Clínica
+    {"nrc": "99101", "clave": "OPT-CLIN1", "materia": "Psicoterapia Humanista Existencial", "secc": "001", "dias": "LM", "hora": "1100-1259", "profesor": "ROGERS CARL", "semestre": "Optativa - Clínica"},
+    {"nrc": "99102", "clave": "OPT-CLIN2", "materia": "Modelos de Terapia Sistémica", "secc": "001", "dias": "AJ", "hora": "1700-1859", "profesor": "MINUCHIN SALVADOR", "semestre": "Optativa - Clínica"},
+    # Educativa
+    {"nrc": "99201", "clave": "OPT-EDU1", "materia": "Problemas de Aprendizaje Temprano", "secc": "001", "dias": "AJ", "hora": "1500-1659", "profesor": "VYGOTSKY LEV", "semestre": "Optativa - Educativa"},
+    {"nrc": "99202", "clave": "OPT-EDU2", "materia": "Orientación Vocacional y Prof.", "secc": "001", "dias": "LM", "hora": "1300-1459", "profesor": "HOLLAND JOHN", "semestre": "Optativa - Educativa"},
+    # Organizacional
+    {"nrc": "99301", "clave": "OPT-ORG1", "materia": "Estrategias de Outplacement Efectivo", "secc": "001", "dias": "LM", "hora": "1500-1659", "profesor": "MARISTANY LUIS", "semestre": "Optativa - Organizacional"},
+    {"nrc": "99302", "clave": "OPT-ORG2", "materia": "Auditoría de Competencias Laborales", "secc": "001", "dias": "AJ", "hora": "1100-1259", "profesor": "ALLES MARTHA", "semestre": "Optativa - Organizacional"},
+    # Social
+    {"nrc": "99401", "clave": "OPT-SOC1", "materia": "Psicología Comunitaria Contemporánea", "secc": "001", "dias": "AJ", "hora": "1700-1859", "profesor": "MONTERO MARITZA", "semestre": "Optativa - Social"},
+    {"nrc": "99402", "clave": "OPT-SOC2", "materia": "Análisis de Conflictos Colectivos", "secc": "001", "dias": "LM", "hora": "0900-1059", "profesor": "MOSCOVICI SERGE", "semestre": "Optativa - Social"}
 ]
 
 def parse_hora(hora_str):
@@ -73,17 +110,14 @@ def coincide_profesor(nombre_ingresado, nombre_catalogo):
 def generar_horario_estricto(lista_materias, profesores_prioritarios, lm_ini, lm_fin, aj_ini, aj_fin, max_intentos=5000):
     materias_unicas = {}
     nombres_materias = {}
-    
     for m in lista_materias:
         clave = m['clave']
         nombres_materias[clave] = m['materia']
-        if clave not in materias_unicas:
-            materias_unicas[clave] = []
+        if clave not in materias_unicas: materias_unicas[clave] = []
         materias_unicas[clave].append(m)
 
     prioridades = [p.strip() for p in profesores_prioritarios if p.strip()]
-    materias_omitidas = []
-    omitidas_prof_unico = []
+    materias_omitidas, omitidas_prof_unico = [], []
     materias_filtradas = {}
     
     for clave, opciones in materias_unicas.items():
@@ -95,24 +129,21 @@ def generar_horario_estricto(lista_materias, profesores_prioritarios, lm_ini, lm
         if opciones_validas:
             materias_filtradas[clave] = opciones_validas
         else:
-            es_unico_profesor_en_toda_la_materia = len(set(op['profesor'] for op in opciones)) == 1
-            if usuario_pidio_profesor or es_unico_profesor_en_toda_la_materia:
+            es_unico_profesor = len(set(op['profesor'] for op in opciones)) == 1
+            if usuario_pidio_profesor or es_unico_profesor:
                 omitidas_prof_unico.append(nombres_materias[clave])
             else:
                 materias_omitidas.append(nombres_materias[clave])
 
     if not materias_filtradas:
-        return None, False, materias_omitidas, omitidas_prof_unico, "El bloqueo de horas eliminó todas las opciones de materias válidas."
+        return None, False, materias_omitidas, omitidas_prof_unico, "El bloqueo de horas eliminó todas las opciones válidas."
 
     for _ in range(max_intentos):
-        calendario_propuesto = []
-        conflicto = False
-        
+        calendario_propuesto, conflicto = [], False
         for clave, opciones in materias_filtradas.items():
             seleccion = random.choice(opciones)
             if any(hay_sobreposicion(seleccion, m_g) for m_g in calendario_propuesto):
-                conflicto = True
-                break
+                conflicto = True; break
             calendario_propuesto.append(seleccion)
             
         if not conflicto and len(calendario_propuesto) == len(materias_filtradas):
@@ -120,125 +151,120 @@ def generar_horario_estricto(lista_materias, profesores_prioritarios, lm_ini, lm
             for p_p in prioridades:
                 existe_en_filtro = any(coincide_profesor(p_p, op['profesor']) for opciones in materias_filtradas.values() for op in opciones)
                 if existe_en_filtro and not any(coincide_profesor(p_p, m['profesor']) for m in calendario_propuesto):
-                    prioridad_completa = False
-                    break
+                    prioridad_completa = False; break
             return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, ""
 
-    return None, False, materias_omitidas, omitidas_prof_unico, "No se encontró una combinación válida sin traslapes con las condiciones dadas."
+    return None, False, materias_omitidas, omitidas_prof_unico, "No se encontró una combinación sin traslapes para los filtros dados."
 
-# --- CONFIGURACIÓN DE STREAMLIT ---
-st.set_page_config(page_title="Generador de Horarios General", layout="wide", page_icon="🗓️")
+# --- CONFIGURACIÓN DE INTERFAZ ---
+st.set_page_config(page_title="Generador de Horarios Universitario", layout="wide", page_icon="🗓️")
 
-# --- BARRA LATERAL (SIDEBAR): CONFIGURACIÓN GENERAL ---
+# --- BARRA LATERAL (SIDEBAR): FILTROS ---
 st.sidebar.title("🛠️ Configuración del Horario")
 
-# 1. SELECTOR DE SEMESTRE GENERAL
-semestre_seleccionado = st.sidebar.selectbox(
-    "📆 Selecciona tu Semestre:",
-    ["Primer Semestre", "Segundo Semestre", "Tercer Semestre", "Cuarto Semestre", "Quinto Semestre", "Sexto Semestre", "Séptimo Semestre", "Octavo Semestre"],
-    index=2 # Tercer semestre por defecto
-)
+# SELECTOR DE SEMESTRES ACTUALIZADO DE 1° A 10°
+MAPA_SEMESTRES = {
+    "1° Semestre": 1, "2° Semestre": 2, "3° Semestre": 3, "4° Semestre": 4, 
+    "5° Semestre": 5, "6° Semestre": 6, "7° Semestre": 7, "8° Semestre": 8, 
+    "9° Semestre": 9, "10° Semestre": 10
+}
+semestre_seleccionado = st.sidebar.selectbox("📆 Selecciona tu Semestre:", list(MAPA_SEMESTRES.keys()), index=2)
+numero_semestre = MAPA_SEMESTRES[semestre_seleccionado]
 
-# BLOQUEOS DE HORAS
+# BLOQUEOS DE HORARIO
 st.sidebar.markdown("---")
-st.sidebar.subheader("🚫 Bloqueo: Lunes y Miércoles")
-lm_inicio = st.sidebar.number_input("Hora de Inicio LM (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-lm_fin = st.sidebar.number_input("Hora de Fin LM (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-
-st.sidebar.markdown("---")
-st.sidebar.subheader("🚫 Bloqueo: Martes y Jueves")
-aj_inicio = st.sidebar.number_input("Hora de Inicio MA (HHMM)", min_value=0, max_value=2400, value=0, step=100)
-aj_fin = st.sidebar.number_input("Hora de Fin MA (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+st.sidebar.subheader("🚫 Bloqueos de Horario")
+lm_inicio = st.sidebar.number_input("Inicio Lunes/Miércoles (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+lm_fin = st.sidebar.number_input("Fin Lunes/Miércoles (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+aj_inicio = st.sidebar.number_input("Inicio Martes/Jueves (HHMM)", min_value=0, max_value=2400, value=0, step=100)
+aj_fin = st.sidebar.number_input("Fin Martes/Jueves (HHMM)", min_value=0, max_value=2400, value=0, step=100)
 
 # PROFESORES PRIORITARIOS
 st.sidebar.markdown("---")
 st.sidebar.subheader("👤 Profesores Prioritarios")
 profesores_inputs = []
 for i in range(1, 6):
-    pref_name = st.sidebar.text_input(f"Docente Prioritario {i}", key=f"prof_{i}", placeholder="Nombre Completo o Apellido")
-    if pref_name.strip():
-        profesores_inputs.append(pref_name.strip())
+    pref_name = st.sidebar.text_input(f"Docente Prioritario {i}", key=f"prof_{i}")
+    if pref_name.strip(): profesores_inputs.append(pref_name.strip())
 
-# --- NUEVO PANEL DE MATERIAS OPTATIVAS ---
+# --- NÚCLEO DE LA REGLA: MATERIAS OPTATIVAS CONDICIONADAS ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("🎯 Módulo de Materias Optativas")
-st.sidebar.write("Activa las materias que deseas anexar a tu mapa curricular:")
 
 optativas_seleccionadas = []
 
-# Filtrar las optativas disponibles por cada sección técnica del catálogo
-opt_clinica = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Clínica"]
-opt_educativa = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Educativa"]
-opt_organizacional = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Organizacional"]
-opt_social = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Social"]
+if numero_semestre <= 6:
+    st.sidebar.info("🔒 Las materias optativas se habilitan a partir de **7° Semestre** de acuerdo al plan de estudios.")
+else:
+    st.sidebar.write("Selecciona las materias optativas que deseas cursar:")
+    opt_clinica = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Clínica"]
+    opt_educativa = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Educativa"]
+    opt_organizacional = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Organizacional"]
+    opt_social = [m for m in CATALOGO_MATERIAS if m['semestre'] == "Optativa - Social"]
 
-with st.sidebar.expander("🧠 Área Clínica"):
-    for o in opt_clinica:
-        if st.checkbox(f"{o['materia']}", key=f"check_{o['nrc']}"):
-            optativas_seleccionadas.append(o)
+    with st.sidebar.expander("🧠 Área Clínica"):
+        for o in opt_clinica:
+            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
+    with st.sidebar.expander("🏫 Área Educativa"):
+        for o in opt_educativa:
+            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
+    with st.sidebar.expander("💼 Área Organizacional"):
+        for o in opt_organizacional:
+            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
+    with st.sidebar.expander("🌍 Área Social"):
+        for o in opt_social:
+            if st.checkbox(f"{o['materia']}", key=f"opt_{o['nrc']}"): optativas_seleccionadas.append(o)
 
-with st.sidebar.expander("🏫 Área Educativa"):
-    for o in opt_educativa:
-        if st.checkbox(f"{o['materia']}", key=f"check_{o['nrc']}"):
-            optativas_seleccionadas.append(o)
-
-with st.sidebar.expander("💼 Área Organizacional"):
-    for o in opt_organizacional:
-        if st.checkbox(f"{o['materia']}", key=f"check_{o['nrc']}"):
-            optativas_seleccionadas.append(o)
-
-with st.sidebar.expander("🌍 Área Social"):
-    for o in opt_social:
-        if st.checkbox(f"{o['materia']}", key=f"check_{o['nrc']}"):
-            optativas_seleccionadas.append(o)
-
-
-# --- CONSTRUCCIÓN DEL BANCO DE MATERIAS DE TRABAJO ---
-# 1. Filtrar las del Tronco Común del Semestre elegido
+# --- ENSAMBLADO Y ANÁLISIS DE CARGA DE MATERIAS (REGLA DE LÍMITE DE 8) ---
 materias_tronco_comun = [m for m in CATALOGO_MATERIAS if m['semestre'] == semestre_seleccionado]
 
-# 2. Unir el tronco común con las optativas marcadas por el usuario
+# Agrupamos las materias del tronco común por su clave para saber cuántas asignaturas base son realmente
+materias_unicas_tronco = len(set(m['clave'] for m in materias_tronco_comun))
+materias_unicas_optativas = len(set(m['clave'] for m in optativas_seleccionadas))
+total_materias_solicitadas = materias_unicas_tronco + materias_unicas_optativas
+
 banco_materias_final = materias_tronco_comun + optativas_seleccionadas
 
-
 # --- CUERPO PRINCIPAL ---
-st.title("🗓️ Generador de Horarios Universitario Multisemestre")
+st.title("🗓️ Generador de Horarios Universitario Inteligente")
 st.subheader(f"Esquema Activo: {semestre_seleccionado}")
-if optativas_seleccionadas:
-    st.caption(f" Optativas añadidas al cálculo: {', '.join([m['materia'] for m in optativas_seleccionadas])}")
 
-if st.button("🎲 Calcular Horario Óptimo", type="primary"):
+# Métrica de control del límite de carga
+col_m1, col_m2 = st.columns(2)
+with col_m1:
+    st.metric(label="Total de Asignaturas en Proceso", value=f"{total_materias_solicitadas} / 8")
+
+# VERIFICACIÓN DEL LÍMITE REQUERIDO
+if total_materias_solicitadas > 8:
+    st.error(f"🚨 **Carga Académica Excedida:** Has seleccionado un total de **{total_materias_solicitadas}** materias. El límite permitido por reglamento de la aplicación es de máximo **8 materias** cargadas en total. Desmarca alguna optativa para continuar.")
+    boton_deshabilitado = True
+else:
+    boton_deshabilitado = False
+
+if st.button("🎲 Calcular Horario Óptimo", type="primary", disabled=boton_deshabilitado):
     if not banco_materias_final:
-        st.error("No hay materias cargadas en este semestre ni optativas seleccionadas.")
+        st.error("No hay materias cargadas en el catálogo de este semestre.")
     else:
         calendario, prioridad_cumplida, omitidas, omitidas_prof_unico, mensaje_error = generar_horario_estricto(
             banco_materias_final, profesores_inputs, lm_inicio, lm_fin, aj_inicio, aj_fin
         )
         
         if calendario:
-            # Alertas de Omisión por Bloqueo Temporal
             if omitidas:
-                for mat_om in omitidas:
-                    st.toast(f"⚠️ Materia Omitida: {mat_om}", icon="🚫")
                 st.warning(f"⚠️ **Atención:** Para cumplir tus restricciones de tiempo, se omitieron: {', '.join(omitidas)}.")
-                
-            # Alerta Especial de Profesor Prioritario/Único Inaccesible
             if omitidas_prof_unico:
-                for mat_prof in omitidas_prof_unico:
-                    st.toast(f"🚨 Omitida por Docente: {mat_prof}", icon="👤")
-                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(omitidas_prof_unico)}** se descartó porque el docente prioritario (o único disponible) choca de forma directa con tus horas bloqueadas.")
+                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(omitidas_prof_unico)}** se descartó porque el profesor prioritario (o único disponible) colisiona con tus bloqueos de hora.")
 
-            # Banner del Estado del Filtro de Profesores
             if len(profesores_inputs) > 0:
                 if prioridad_cumplida:
                     st.balloons()
-                    st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios en el 100% de las opciones asignadas.")
+                    st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios.")
                 else:
-                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Uno o más profesores prioritarios no se pudieron implementar debido a colisiones con tus horarios bloqueados.")
+                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se integraron por restricciones horarias insalvables.")
             else:
                 st.success("🎯 ¡Horario base estructurado correctamente!")
 
-            # Armar Matriz Horaria
+            # Matriz de Calendario Semanal
             bloques_horas = ["0700-0859", "0900-1059", "1100-1259", "1300-1459", "1500-1659", "1700-1859", "1900-2059"]
             dias_semana = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
             df_horario = pd.DataFrame("", index=bloques_horas, columns=dias_semana)
@@ -250,7 +276,6 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                 if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
                 if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
 
-            # --- RENDERIZADO DE TABLAS ---
             st.write("### 📅 Vista de Calendario Semanal")
             st.markdown(
                 """
@@ -266,7 +291,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
             
             st.write("### 📝 Detalle del Horario Activo")
             df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor', 'semestre']]
-            df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente', 'Tipo/Semestre']
+            df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente', 'Semestre Origen']
             st.dataframe(df_lista, use_container_width=True, hide_index=True)
         else:
             st.error(mensaje_error)
