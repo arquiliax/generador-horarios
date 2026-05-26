@@ -494,7 +494,7 @@ st.sidebar.subheader("Periodo Académico")
 semestre_seleccionado = st.sidebar.selectbox(
     "Selecciona tu semestre activo:",
     ["1er semestre","2do semestre","3er Semestre", "4to Semestre", "5to Semestre", "6to Semestre", "7mo Semestre", "8vo Semestre", "9no Semestre", "10mo Semestre"],
-    index=1  # Posición del 1er Semestre por comodidad en esta prueba
+    index=0  # Posición del 1er Semestre por comodidad en esta prueba
 )
 
 st.sidebar.markdown("---")
