@@ -331,7 +331,7 @@ semestre_seleccionado = st.sidebar.selectbox(
     index=0
 )
 
-# --- REINTRODUCCIÓN DE LA ESTRUCTURA MIXTA COMPLETA (2 HORAS Y 1.5 HORAS INTERCALADAS) ---
+# --- CONFIGURACIÓN DEL SLIDER DE HORARIOS MIXTOS (1.5h y 2h INTERCALADOS) ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("⏱️ Horario de Referencia")
 st.sidebar.markdown(
@@ -436,7 +436,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                 st.success(f"🎯 Horario estructurado correctamente. Carga final armada: {len(calendario)} materias.")
 
             if calendario:
-                # 📅 SECCIÓN: CONSTRUCCIÓN COMPLETA E INDEPENDIENTE DEL CALENDARIO SEMANAL PREMIUN
+                # 📅 SECCIÓN DE CONSTRUCCIÓN E INYECCIÓN DE DATOS INTELIGENTE
                 bloques_completos = [
                     "07:00 - 08:29", "07:00 - 08:59", "09:00 - 10:29", "09:00 - 10:59",
                     "11:00 - 12:29", "11:00 - 12:59", "13:00 - 14:29", "13:00 - 14:59",
@@ -447,6 +447,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                 df_horario = pd.DataFrame("&nbsp;", index=bloques_completos, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
                 
                 for m in calendario:
+                    # Formateo estético del contenido de la celda en HTML avanzado
                     info_celda = f"📚 <b>{m['materia']}</b><br><span style='color:#555;'>Secc. {m['secc']}</span><br>👤 {m['profesor']}<br><span style='color:#1E3A8A; font-weight:bold;'>[NRC: {m['nrc']}]</span>"
                     ini_mat, fin_mat = parse_hora(m['hora'])
                     
@@ -455,6 +456,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                         b_ini = int(b_str_ini.replace(":", ""))
                         b_fin = int(b_str_fin.replace(":", ""))
                         
+                        # Mapeo matemático: Si la materia toca total o parcialmente el bloque, se replica con gracia
                         if ini_mat < b_fin and b_ini < fin_mat:
                             if 'L' in m['dias']: df_horario.at[bloque, "Lunes"] = info_celda
                             if 'M' in m['dias']: df_horario.at[bloque, "Miércoles"] = info_celda
@@ -462,10 +464,12 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                             if 'J' in m['dias']: df_horario.at[bloque, "Jueves"] = info_celda
                             if 'V' in m['dias']: df_horario.at[bloque, "Viernes"] = info_celda
 
+                # Ocultamos dinámicamente celdas y días que se queden 100% en blanco
                 filas_activas = [f for f in df_horario.index if not (df_horario.loc[f] == "&nbsp;").all()]
                 columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "&nbsp;").all()]
                 df_horario_filtrado = df_horario.loc[filas_activas, columnas_activas]
 
+                # 🎨 INYECCIÓN DE ESTILOS CSS PERSONALIZADOS (REEMPLAZA A ST.TABLE TRADICIONAL)
                 st.write("### 📅 Vista de Calendario Semanal")
                 st.markdown(
                     """
@@ -492,7 +496,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                             padding: 12px !important;
                             text-align: left !important;
                             vertical-align: top !important;
-                            height: 100px !important;
+                            height: 105px !important;
                             background-color: #F8F9FA !important;
                             border: 1px solid #E5E7EB !important;
                             line-height: 1.5 !important;
@@ -505,6 +509,7 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                     unsafe_allow_html=True
                 )
                 
+                # Renderizado seguro convirtiendo el DataFrame a HTML plano interpretable
                 st.markdown('<div class="styled-table">', unsafe_allow_html=True)
                 st.write(df_horario_filtrado.to_html(escape=False, justify='center'), unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
