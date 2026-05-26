@@ -204,7 +204,7 @@ OPTATIVAS_POR_AREA = {
 }
 
 # =========================================================================
-# ⚙️ MOTOR ALGORÍTMICO Y LÓGICA DE CONTROL DE INTERVALOS
+# ⚙️ MOTOR ALGORÍTMICO Y LÓGICA DE CONTROL DE INTERVALOS MIXTOS
 # =========================================================================
 def parse_hora(hora_str):
     inicio, fin = hora_str.split('-')
@@ -221,12 +221,6 @@ def hay_sobreposicion(materia1, materia2):
 def entra_en_rango_permitido(materia, lm_lims, aj_lims, v_lims, omitir_viernes):
     if 'hora' not in materia or not materia['hora']: return False
     ini_mat, fin_mat = parse_hora(materia['hora'])
-    
-    # 🔄 AJUSTE DE HORA Y MEDIA: Si la materia termina en "29" (ej. 0829, 1029), validamos
-    # contra el bloque completo de 2 horas (ej. 0859, 1059) para asegurar disponibilidad total.
-    if str(fin_mat).endswith("29"):
-        fin_mat = fin_mat + 30  # Convierte un final 0829 a 0859 para el filtro estricto.
-
     dias = materia['dias']
     
     if 'L' in dias or 'M' in dias:
@@ -257,7 +251,7 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
         materias_unicas[clave].append(m)
 
     prioridades = [p.strip() for p in profesores_prioritarios if p.strip()]
-    materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media = [], [], [], []
+    materias_omitidas, omitidas_prof_unico, omitidas_por_viernes = [], [], []
     materias_filtradas = {}
     
     for clave, opciones in materias_unicas.items():
@@ -289,18 +283,13 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
         if opciones_validas:
             optativas_filtradas[clave_opt] = opciones_validas
         else:
-            # Detectar si quedó fuera porque su bloque de 2 horas asignado no está libre en los límites de referencia
-            es_hora_media = any(op['hora'].endswith("29") for op in opciones_a_evaluar)
-            if es_hora_media:
-                omitidas_hora_media.append(opciones_opt[0]['materia'])
-            else:
-                materias_omitidas.append(opciones_opt[0]['materia'])
+            materias_omitidas.append(opciones_opt[0]['materia'])
 
-    if not materias_filtradas and not optativas_filtradas and (omitidas_por_viernes or omitidas_hora_media):
-        return [], True, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, ""
+    if not materias_filtradas and not optativas_filtradas and omitidas_por_viernes:
+        return [], True, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, ""
 
     if not materias_filtradas and not optativas_filtradas:
-        return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, "Las restricciones de los Horarios de Referencia eliminaron todas las opciones disponibles."
+        return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, "Las restricciones de los Horarios de Referencia eliminaron todas las opciones disponibles."
 
     for _ in range(max_intentos):
         calendario_propuesto, conflicto = [], False
@@ -325,9 +314,9 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
                 existe_en_filtro = any(coincide_profesor(p_p, op['profesor']) for opciones in materias_filtradas.values() for op in opciones) or any(coincide_profesor(p_p, op['profesor']) for opciones in optativas_filtradas.values() for op in opciones)
                 if existe_en_filtro and not any(coincide_profesor(p_p, m['profesor']) for m in calendario_propuesto):
                     prioridad_completa = False; break
-            return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, ""
+            return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, ""
 
-    return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, "No se encontró una combinación válida sin traslapes dentro de las horas de referencia."
+    return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, "No se encontró una combinación válida sin traslapes dentro de las horas de referencia."
 
 # --- CONFIGURACIÓN DE STREAMLIT ---
 st.set_page_config(page_title="Generador de Horarios Oficial", layout="wide", page_icon="🗓️")
@@ -342,20 +331,21 @@ semestre_seleccionado = st.sidebar.selectbox(
     index=0
 )
 
-# --- SECCIÓN: HORARIOS DE REFERENCIA EN BLOQUES DE 2 HORAS ACTUALIZADOS (SIN REPETICIONES) ---
+# --- REINTRODUCCIÓN DE LA ESTRUCTURA MIXTA COMPLETA (2 HORAS Y 1.5 HORAS INTERCALADAS) ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("⏱️ Horario de Referencia")
 st.sidebar.markdown(
     "<small style='color: gray; display:block; margin-bottom: 10px;'>"
-    "Establece los rangos de tus clases diarias en intervalos fijos de 2 horas."
+    "Establece los rangos permitidos incluyendo los bloques independientes de 1.5 horas."
     "</small>", 
     unsafe_allow_html=True
 )
 
-# 🔄 REGRESO AL FORMATO ANTERIOR DE INTERVALOS DE 2 HORAS FIJOS (LIMPIO Y COMPACTO)
 horas_visibles = {
-    700: "07:00 AM", 900: "09:00 AM", 1100: "11:00 AM", 1300: "01:00 PM", 
-    1500: "03:00 PM", 1700: "05:00 PM", 1900: "07:00 PM", 2100: "09:00 PM"
+    700: "07:00 AM", 830: "08:30 AM", 900: "09:00 AM", 1030: "10:30 AM",
+    1100: "11:00 AM", 1230: "12:30 PM", 1300: "01:00 PM", 1430: "02:30 PM",
+    1500: "03:00 PM", 1630: "04:30 PM", 1700: "05:00 PM", 1830: "06:30 PM",
+    1900: "07:00 PM", 2100: "09:00 PM"
 }
 valores_horas = list(horas_visibles.keys())
 
@@ -424,16 +414,11 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
     elif not lista_materias_trabajo and not optativas_seleccionadas_usuario:
         st.warning(f"La base de datos para el **{semestre_seleccionado}** está vacía.")
     else:
-        calendario, prioridad_cumplida, om, om_prof, om_viernes, om_hora_media, err = generar_horario_estricto(
+        calendario, prioridad_cumplida, om, om_prof, om_viernes, err = generar_horario_estricto(
             lista_materias_trabajo, optativas_seleccionadas_usuario, profesores_inputs, lm_rango, aj_rango, v_rango, omitir_viernes
         )
         
         if calendario is not None:
-            # 🔄 ADVERTENCIA DE SEGURIDAD PARA CLASES DE 1 HORA Y MEDIA ACERCA DEL RANGO SELECCIONADO
-            if om_hora_media:
-                for mat in set(om_hora_media):
-                    st.error(f"⚠️ **Advertencia de Rango:** La materia de hora y media **{mat}** no se pudo asignar. El bloque completo de 2 horas que requiere no está completamente disponible en tu Horario de Referencia.")
-
             if om_viernes:
                 for mat in set(om_viernes):
                     st.warning(f"⚠️ La materia **{mat}** no se seleccionó por cruce o límites en viernes.")
@@ -451,24 +436,25 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                 st.success(f"🎯 Horario estructurado correctamente. Carga final armada: {len(calendario)} materias.")
 
             if calendario:
-                # Reconstrucción de la visualización de la tabla
-                bloques_originales = [
-                    "07:00 - 08:59", "09:00 - 10:59", "11:00 - 12:59", 
-                    "13:00 - 14:59", "15:00 - 16:59", "17:00 - 18:59", "19:00 - 20:59"
+                # 📅 SECCIÓN: CONSTRUCCIÓN COMPLETA E INDEPENDIENTE DEL CALENDARIO SEMANAL PREMIUN
+                bloques_completos = [
+                    "07:00 - 08:29", "07:00 - 08:59", "09:00 - 10:29", "09:00 - 10:59",
+                    "11:00 - 12:29", "11:00 - 12:59", "13:00 - 14:29", "13:00 - 14:59",
+                    "13:00 - 15:59", "15:00 - 16:29", "15:00 - 16:59", "17:00 - 18:29",
+                    "17:00 - 18:59", "19:00 - 20:59"
                 ]
                 
-                df_horario = pd.DataFrame("", index=bloques_originales, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
+                df_horario = pd.DataFrame("&nbsp;", index=bloques_completos, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
                 
                 for m in calendario:
-                    info_celda = f"📚 {m['materia']} (Sec. {m['secc']})\n👤 {m['profesor']}\n[NRC: {m['nrc']}]"
+                    info_celda = f"📚 <b>{m['materia']}</b><br><span style='color:#555;'>Secc. {m['secc']}</span><br>👤 {m['profesor']}<br><span style='color:#1E3A8A; font-weight:bold;'>[NRC: {m['nrc']}]</span>"
                     ini_mat, fin_mat = parse_hora(m['hora'])
                     
-                    for bloque in bloques_originales:
+                    for bloque in bloques_completos:
                         b_str_ini, b_str_fin = bloque.split(" - ")
                         b_ini = int(b_str_ini.replace(":", ""))
                         b_fin = int(b_str_fin.replace(":", ""))
                         
-                        # Mapeo flexible: mete horas y media y formatos de 3 horas en los bloques correspondientes si se traslapan
                         if ini_mat < b_fin and b_ini < fin_mat:
                             if 'L' in m['dias']: df_horario.at[bloque, "Lunes"] = info_celda
                             if 'M' in m['dias']: df_horario.at[bloque, "Miércoles"] = info_celda
@@ -476,13 +462,52 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                             if 'J' in m['dias']: df_horario.at[bloque, "Jueves"] = info_celda
                             if 'V' in m['dias']: df_horario.at[bloque, "Viernes"] = info_celda
 
-                filas_activas = [f for f in df_horario.index if not (df_horario.loc[f] == "").all()]
-                columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "").all()]
+                filas_activas = [f for f in df_horario.index if not (df_horario.loc[f] == "&nbsp;").all()]
+                columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "&nbsp;").all()]
                 df_horario_filtrado = df_horario.loc[filas_activas, columnas_activas]
 
                 st.write("### 📅 Vista de Calendario Semanal")
-                st.markdown("<style>table { font-size: 13px !important; width: 100% !important; } th { background-color: #1E3A8A !important; color: white !important; } td { white-space: pre-line !important; height: 80px !important; vertical-align: top !important; background-color: #F8F9FA; border: 1px solid #D1D5DB !important; }</style>", unsafe_allow_html=True)
-                st.table(df_horario_filtrado)
+                st.markdown(
+                    """
+                    <style>
+                        .styled-table table {
+                            font-family: 'Segoe UI', Arial, sans-serif !important;
+                            border-collapse: collapse !important;
+                            width: 100% !important;
+                            margin: 10px 0 !important;
+                            font-size: 13px !important;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+                            border-radius: 8px !important;
+                            overflow: hidden !important;
+                        }
+                        .styled-table th {
+                            background-color: #1E3A8A !important;
+                            color: white !important;
+                            text-align: center !important;
+                            font-weight: 600 !important;
+                            padding: 12px !important;
+                            border: 1px solid #1E3A8A !important;
+                        }
+                        .styled-table td {
+                            padding: 12px !important;
+                            text-align: left !important;
+                            vertical-align: top !important;
+                            height: 100px !important;
+                            background-color: #F8F9FA !important;
+                            border: 1px solid #E5E7EB !important;
+                            line-height: 1.5 !important;
+                        }
+                        .styled-table tr:hover td {
+                            background-color: #F1F5F9 !important;
+                        }
+                    </style>
+                    """, 
+                    unsafe_allow_html=True
+                )
+                
+                st.markdown('<div class="styled-table">', unsafe_allow_html=True)
+                st.write(df_horario_filtrado.to_html(escape=False, justify='center'), unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
                 
                 st.write("### 📝 Detalle del Horario Activo")
                 df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor']]
