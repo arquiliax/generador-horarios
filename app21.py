@@ -112,7 +112,7 @@ CATALOGO_MATERIAS = [
     {"nrc": "57975", "clave": "ISPS 205", "materia": "Psicologia Comunitaria", "secc": "005", "dias": "LM", "hora": "1100-1259", "profesor": "SANCHEZ-HERNANDEZ GRACIELA", "semestre": "8vo Semestre"},
     {"nrc": "57982", "clave": "ISPS 204", "materia": "Terapia Familiar", "secc": "005", "dias": "LM", "hora": "0700-0859", "profesor": "GALINDO-MOTO MANUEL ALEJANDRO", "semestre": "8vo Semestre"},
     {"nrc": "57992", "clave": "PSIS 266", "materia": "Capacitacion", "secc": "006", "dias": "LM", "hora": "1700-1859", "profesor": "LUNA-PANDO LUIS FERNANDO", "semestre": "8vo Semestre"},
-    {"nrc": "57998", "clave": "ISPS 205", "materia": "Psicologia Comunitaria", "secc": "006", "dias": "LM", "font-weight": "normal", "hora": "1500-1659", "profesor": "ROMERO RODRIGUEZ EULOGIO", "semestre": "8vo Semestre"},
+    {"nrc": "57998", "clave": "ISPS 205", "materia": "Psicologia Comunitaria", "secc": "006", "hora": "1500-1659", "profesor": "ROMERO RODRIGUEZ EULOGIO", "semestre": "8vo Semestre"},
     {"nrc": "58004", "clave": "ISPS 204", "materia": "Terapia Familiar", "secc": "006", "dias": "AJ", "hora": "1900-2059", "profesor": "AGUILAR ALVAREZ EDGAR ANDRES", "semestre": "8vo Semestre"},
     {"nrc": "58009", "clave": "PSIS 266", "materia": "Capacitacion", "secc": "007", "dias": "AJ", "hora": "0900-1059", "profesor": "FRAGOSOLUZURIAGA ROCIO", "semestre": "8vo Semestre"},
     {"nrc": "58025", "clave": "ISPS 205", "materia": "Psicologia Comunitaria", "secc": "007", "dias": "LM", "hora": "1300-1459", "profesor": "ROMERO RODRIGUEZ EULOGIO", "semestre": "8vo Semestre"},
@@ -137,7 +137,7 @@ CATALOGO_MATERIAS = [
 ]
 
 # =========================================================================
-# 🧬 CATÁLOGO COMPLETO DE MATERIAS OPTATIVAS (ORGANIZADO EN 4 SECCIONES)
+# 🧬 CATÁLOGO DE OPTATIVAS (MATERIAS CON FORMATOS DE 1 HORA Y MEDIA O 3 HORAS)
 # =========================================================================
 OPTATIVAS_POR_AREA = {
     "Clinica": [
@@ -204,7 +204,7 @@ OPTATIVAS_POR_AREA = {
 }
 
 # =========================================================================
-# ⚙️ MOTOR ALGORÍTMICO Y LÓGICA DEL GENERADOR
+# ⚙️ MOTOR ALGORÍTMICO Y LÓGICA DE CONTROL DE INTERVALOS
 # =========================================================================
 def parse_hora(hora_str):
     inicio, fin = hora_str.split('-')
@@ -221,21 +221,23 @@ def hay_sobreposicion(materia1, materia2):
 def entra_en_rango_permitido(materia, lm_lims, aj_lims, v_lims, omitir_viernes):
     if 'hora' not in materia or not materia['hora']: return False
     ini_mat, fin_mat = parse_hora(materia['hora'])
+    
+    # 🔄 AJUSTE DE HORA Y MEDIA: Si la materia termina en "29" (ej. 0829, 1029), validamos
+    # contra el bloque completo de 2 horas (ej. 0859, 1059) para asegurar disponibilidad total.
+    if str(fin_mat).endswith("29"):
+        fin_mat = fin_mat + 30  # Convierte un final 0829 a 0859 para el filtro estricto.
+
     dias = materia['dias']
     
     if 'L' in dias or 'M' in dias:
-        if ini_mat < lm_lims[0] or fin_mat > lm_lims[1]:
-            return False
+        if ini_mat < lm_lims[0] or fin_mat > lm_lims[1]: return False
             
     if 'A' in dias or 'J' in dias:
-        if ini_mat < aj_lims[0] or fin_mat > aj_lims[1]:
-            return False
+        if ini_mat < aj_lims[0] or fin_mat > aj_lims[1]: return False
             
     if 'V' in dias:
-        if omitir_viernes:
-            return False
-        if ini_mat < v_lims[0] or fin_mat > v_lims[1]:
-            return False
+        if omitir_viernes: return False
+        if ini_mat < v_lims[0] or fin_mat > v_lims[1]: return False
             
     return True
 
@@ -255,7 +257,7 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
         materias_unicas[clave].append(m)
 
     prioridades = [p.strip() for p in profesores_prioritarios if p.strip()]
-    materias_omitidas, omitidas_prof_unico, omitidas_por_viernes = [], [], []
+    materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media = [], [], [], []
     materias_filtradas = {}
     
     for clave, opciones in materias_unicas.items():
@@ -287,17 +289,18 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
         if opciones_validas:
             optativas_filtradas[clave_opt] = opciones_validas
         else:
-            tiene_viernes = any('V' in op['dias'] for op in opciones_a_evaluar)
-            if omitir_viernes and tiene_viernes:
-                omitidas_por_viernes.append(opciones_opt[0]['materia'])
+            # Detectar si quedó fuera porque su bloque de 2 horas asignado no está libre en los límites de referencia
+            es_hora_media = any(op['hora'].endswith("29") for op in opciones_a_evaluar)
+            if es_hora_media:
+                omitidas_hora_media.append(opciones_opt[0]['materia'])
             else:
                 materias_omitidas.append(opciones_opt[0]['materia'])
 
-    if not materias_filtradas and not optativas_filtradas and omitidas_por_viernes:
-        return [], True, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, ""
+    if not materias_filtradas and not optativas_filtradas and (omitidas_por_viernes or omitidas_hora_media):
+        return [], True, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, ""
 
     if not materias_filtradas and not optativas_filtradas:
-        return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, "Las restricciones de los Horarios de Referencia eliminaron todas las opciones disponibles."
+        return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, "Las restricciones de los Horarios de Referencia eliminaron todas las opciones disponibles."
 
     for _ in range(max_intentos):
         calendario_propuesto, conflicto = [], False
@@ -322,9 +325,9 @@ def generar_horario_estricto(lista_materias, optativas_seleccionadas, profesores
                 existe_en_filtro = any(coincide_profesor(p_p, op['profesor']) for opciones in materias_filtradas.values() for op in opciones) or any(coincide_profesor(p_p, op['profesor']) for opciones in optativas_filtradas.values() for op in opciones)
                 if existe_en_filtro and not any(coincide_profesor(p_p, m['profesor']) for m in calendario_propuesto):
                     prioridad_completa = False; break
-            return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, ""
+            return calendario_propuesto, prioridad_completa, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, ""
 
-    return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, "No se encontró una combinación válida sin traslapes dentro de las horas de referencia."
+    return None, False, materias_omitidas, omitidas_prof_unico, omitidas_por_viernes, omitidas_hora_media, "No se encontró una combinación válida sin traslapes dentro de las horas de referencia."
 
 # --- CONFIGURACIÓN DE STREAMLIT ---
 st.set_page_config(page_title="Generador de Horarios Oficial", layout="wide", page_icon="🗓️")
@@ -339,21 +342,20 @@ semestre_seleccionado = st.sidebar.selectbox(
     index=0
 )
 
-# --- SECCIÓN: HORARIOS DE REFERENCIA DINÁMICOS ---
+# --- SECCIÓN: HORARIOS DE REFERENCIA EN BLOQUES DE 2 HORAS ACTUALIZADOS (SIN REPETICIONES) ---
 st.sidebar.markdown("---")
 st.sidebar.subheader("⏱️ Horario de Referencia")
 st.sidebar.markdown(
     "<small style='color: gray; display:block; margin-bottom: 10px;'>"
-    "Establece los rangos límites (inicio y fin) de tus clases diarias. El algoritmo acomodará tus asignaturas "
-    "únicamente dentro de estas horas seleccionadas (por ejemplo: de 09:00 a 17:00 h)."
+    "Establece los rangos de tus clases diarias en intervalos fijos de 2 horas."
     "</small>", 
     unsafe_allow_html=True
 )
 
+# 🔄 REGRESO AL FORMATO ANTERIOR DE INTERVALOS DE 2 HORAS FIJOS (LIMPIO Y COMPACTO)
 horas_visibles = {
-    700: "07:00 AM", 800: "08:00 AM", 900: "09:00 AM", 1000: "10:00 AM", 1100: "11:00 AM", 
-    1200: "12:00 PM", 1300: "01:00 PM", 1400: "02:00 PM", 1500: "03:00 PM", 1600: "04:00 PM", 
-    1700: "05:00 PM", 1800: "06:00 PM", 1900: "07:00 PM", 2000: "08:00 PM", 2100: "09:00 PM"
+    700: "07:00 AM", 900: "09:00 AM", 1100: "11:00 AM", 1300: "01:00 PM", 
+    1500: "03:00 PM", 1700: "05:00 PM", 1900: "07:00 PM", 2100: "09:00 PM"
 }
 valores_horas = list(horas_visibles.keys())
 
@@ -395,7 +397,6 @@ optativas_expander = st.sidebar.expander("✨ Selección de Optativas", expanded
 optativas_seleccionadas_usuario = {}
 
 with optativas_expander:
-    st.markdown("<small>Selecciona las asignaturas optativas oficiales que deseas incorporar:</small>", unsafe_allow_html=True)
     for area, materias in OPTATIVAS_POR_AREA.items():
         st.markdown(f"**Área {area}**")
         materias_unicas_nombre = {}
@@ -423,50 +424,51 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
     elif not lista_materias_trabajo and not optativas_seleccionadas_usuario:
         st.warning(f"La base de datos para el **{semestre_seleccionado}** está vacía.")
     else:
-        calendario, prioridad_cumplida, om, om_prof, om_viernes, err = generar_horario_estricto(
+        calendario, prioridad_cumplida, om, om_prof, om_viernes, om_hora_media, err = generar_horario_estricto(
             lista_materias_trabajo, optativas_seleccionadas_usuario, profesores_inputs, lm_rango, aj_rango, v_rango, omitir_viernes
         )
         
         if calendario is not None:
+            # 🔄 ADVERTENCIA DE SEGURIDAD PARA CLASES DE 1 HORA Y MEDIA ACERCA DEL RANGO SELECCIONADO
+            if om_hora_media:
+                for mat in set(om_hora_media):
+                    st.error(f"⚠️ **Advertencia de Rango:** La materia de hora y media **{mat}** no se pudo asignar. El bloque completo de 2 horas que requiere no está completamente disponible en tu Horario de Referencia.")
+
             if om_viernes:
                 for mat in set(om_viernes):
-                    st.warning(f"⚠️ La materia **{mat}** no se seleccionó porque tiene clases el viernes y decidiste omitir ese día o queda fuera de la referencia.")
+                    st.warning(f"⚠️ La materia **{mat}** no se seleccionó por cruce o límites en viernes.")
             if om:
-                st.warning(f"⚠️ **Atención:** Por restricciones de límites de hora de referencia o traslapes se omitieron: {', '.join(set(om))}.")
+                st.warning(f"⚠️ **Atención:** Por restricciones se omitieron: {', '.join(set(om))}.")
             if om_prof:
-                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(set(om_prof))}** quedó fuera de las horas límites de referencia indicadas.")
+                st.error(f"👤 **Materia Omitida:** La asignatura **{', '.join(set(om_prof))}** quedó fuera por restricciones de profesor prioritario.")
 
             if len(profesores_inputs) > 0 and len(calendario) > 0:
                 if prioridad_cumplida:
                     st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios.")
                 else:
-                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se incluyeron porque sus materias rompen tus horas de referencia.")
+                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se incluyeron por restricciones de cruce horaria.")
             elif len(calendario) > 0:
                 st.success(f"🎯 Horario estructurado correctamente. Carga final armada: {len(calendario)} materias.")
 
             if calendario:
-                # =========================================================================
-                # 🔄 CORRECCIÓN AQUÍ: CUADRÍCULA EN BLOQUES LINEALES DE 1 HORA (SIN DUPLICADOS)
-                # =========================================================================
-                bloques_unificados = [
-                    "07:00 - 08:00", "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00",
-                    "11:00 - 12:00", "12:00 - 13:00", "13:00 - 14:00", "14:00 - 15:00",
-                    "15:00 - 16:00", "16:00 - 17:00", "17:00 - 18:00", "18:00 - 19:00",
-                    "19:00 - 20:00", "20:00 - 21:00"
+                # Reconstrucción de la visualización de la tabla
+                bloques_originales = [
+                    "07:00 - 08:59", "09:00 - 10:59", "11:00 - 12:59", 
+                    "13:00 - 14:59", "15:00 - 16:59", "17:00 - 18:59", "19:00 - 20:59"
                 ]
                 
-                df_horario = pd.DataFrame("", index=bloques_unificados, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
+                df_horario = pd.DataFrame("", index=bloques_originales, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
                 
                 for m in calendario:
                     info_celda = f"📚 {m['materia']} (Sec. {m['secc']})\n👤 {m['profesor']}\n[NRC: {m['nrc']}]"
                     ini_mat, fin_mat = parse_hora(m['hora'])
                     
-                    # El algoritmo determina en qué celdas horarias debe pintarse la materia (ej: 0700-0859 ocupa las filas de 7-8 y de 8-9)
-                    for bloque in bloques_unificados:
+                    for bloque in bloques_originales:
                         b_str_ini, b_str_fin = bloque.split(" - ")
                         b_ini = int(b_str_ini.replace(":", ""))
                         b_fin = int(b_str_fin.replace(":", ""))
                         
+                        # Mapeo flexible: mete horas y media y formatos de 3 horas en los bloques correspondientes si se traslapan
                         if ini_mat < b_fin and b_ini < fin_mat:
                             if 'L' in m['dias']: df_horario.at[bloque, "Lunes"] = info_celda
                             if 'M' in m['dias']: df_horario.at[bloque, "Miércoles"] = info_celda
@@ -474,7 +476,6 @@ if st.button("🎲 Calcular Horario Óptimo", type="primary"):
                             if 'J' in m['dias']: df_horario.at[bloque, "Jueves"] = info_celda
                             if 'V' in m['dias']: df_horario.at[bloque, "Viernes"] = info_celda
 
-                # Ocultar filas y columnas que se queden vacías para optimizar el espacio visual
                 filas_activas = [f for f in df_horario.index if not (df_horario.loc[f] == "").all()]
                 columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "").all()]
                 df_horario_filtrado = df_horario.loc[filas_activas, columnas_activas]
