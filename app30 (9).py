@@ -904,102 +904,249 @@ h1, h2, h3, .stSubheader {
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🗓️ Generador de Horarios Dinámico y Prioritario")
-st.subheader(f"Esquema Activo: {semestre_seleccionado}")
+# =========================================================================
+# 📊 CATÁLOGO DE PROFESORES POR RANGO (basado en listado oficial)
+# =========================================================================
+PROFESORES_POR_RANGO = {
+    1: [
+        "Brambila - López Teresita",
+        "Fragoso - Luzuriaga Rocío",
+        "Hernández - Vichido Donaxi",
+        "Lara - López Aline Benjamín",
+        "Luna - Pando Luis Fernando",
+        "Meza - Flores Abigail",
+        "Sánchez - Cid José Elías",
+        "Sánchez - Hernández Graciela",
+        "Sánchez - Morales Rebeca",
+        "Serrano - Ramírez Ana Lucía",
+        "Silva - Ríos Carlos Enrique",
+        "Stange - Espínola Isabel del Rosario",
+        "Tapia - López Sandra Lucía",
+        "Tlalpan - Ruiz María Guadalupe",
+        "Vázquez - Castellanos Armando",
+    ],
+    2: [
+        "Aguilar - Álvarez Edgar Andrés",
+        "Aguilar - Dávila Yadira",
+        "Álvarez - Carrillo Paulina",
+        "Arellano - Bautista Claudia Angélica",
+        "Becerra - Allende Jorge Fernando",
+        "Cantero - Angulo María del Pilar",
+        "Carro - Meza Dulce Carolina",
+        "Coyotecatl - Fabián Francisca",
+        "Fragoso - Luzuriaga Rocío",
+        "García - Aguilar Gregorio",
+        "Hernández - Casiano Oscar",
+        "Hernández - Escobar Verónica",
+        "Hernández - Vichido Donaxi",
+        "Lara - López Aline Benjamín",
+        "López - Cortés Vicente Arturo",
+        "Luna - Pando Luis Fernando",
+        "Luna - Pérez Perla Wendoline",
+        "Martínez - Méndez Dulce María",
+        "Martínez - Velázquez Eduardo Salvador",
+        "Mendez - Balbuena Ignacio",
+        "Meza - Flores Abigail",
+        "Morales - Juárez Bartola",
+        "Rodríguez - Castillo Karina",
+        "Rodríguez - Sánchez José Luis",
+        "Rojas - Hernández Guadalupe Janet",
+        "Sánchez - Cid José Elías",
+        "Sánchez - Morales Rebeca",
+        "Serrano - Ramírez Ana Lucía",
+        "Solovieva - Yulia",
+        "Stange - Espínola Isabel del Rosario",
+        "Tapia - López Sandra Lucía",
+        "Tenorio - Martínez Rosalía",
+        "Vega - Simont Edmundo",
+        "Velasco - Vallejo María del Rosario",
+        "Zepeda - Astorga Francisco",
+    ],
+    3: [
+        "Arce - Muñoz Mohamed",
+        "Benavides - Valderrabano Maricela",
+        "Berra - Bortolotti María Juana",
+        "Bonilla - Sánchez María del Rosario",
+        "Cervantes - Hernández María Leticia",
+        "Chávez - González Erika",
+        "Clemente María Antonia del Carmen",
+        "Coyotecatl - Fabián Francisca",
+        "De la Oliva - Granizo David",
+        "De la Rosa - Díaz Brenda Elena",
+        "Díaz - Cárdenas Alfonso Felipe",
+        "Díaz - Carreon Graciela",
+        "Durán - Soriano María del Rosio",
+        "Galindo - Moto Manuel Alejandro",
+        "García - Aguilar Gregorio",
+        "González - Cruz Víctor Gerardo",
+        "Hernández - Rodríguez G. Lourdes",
+        "Huerta - Ramírez Federico",
+        "Lima - Tizcareno Silvia Carolina",
+        "Luna - Pérez Perla Wendoline",
+        "Martínez - Méndez Dulce María",
+        "Mercado - Carnalla Mario Renato",
+        "Morales - Juárez Bartola",
+        "Morales - Reyes José Luis",
+        "Moto - Martínez Teresa Ledoina",
+        "Orea - Hernández Ricardo Enrique",
+        "Pérez - Limón Romualdo",
+        "Pérez - Xochipa Marco Polo",
+        "Ramos - Pérez Cecilia",
+        "Rodríguez - Martínez Ricardo Alejandro",
+        "Rojas - Solís José Luis",
+        "Romero - Horan María Guillermina",
+        "Sánchez - Alonso Luis Fernando",
+        "Vega - Simont Edmundo",
+        "Velasco - Vallejo María del Rosario",
+    ],
+    4: [
+        "Arce - Muñoz Mohamed",
+        "Benavides - Valderrabano Maricela",
+        "Berra - Bortolotti María Juana",
+        "De la Oliva - Granizo David",
+        "Durán - Soriano María del Rosio",
+        "Galindo - Moto Manuel Alejandro",
+        "Morales - Reyes José Luis",
+        "Perez - Barroso Marlene",
+        "Romero - Rodríguez Eulogio",
+        "Sánchez - Alonso Luis Fernando",
+    ],
+    5: [
+        "Degante - Reyes Mónica Alejandra",
+    ],
+}
 
-# Aviso de materias bloqueadas por prerequisitos faltantes
-if claves_atrasadas and materias_omitidas_por_prereq:
-    st.error(
-        f"🚫 **Materias eliminadas del horario por prerequisitos incompletos:** "
-        f"{', '.join(sorted(materias_omitidas_por_prereq))}  \n"
-        f"_(Causa: tienes atrasada(s): {', '.join(nombres_atrasadas)})_"
-    )
-elif claves_atrasadas and not materias_omitidas_por_prereq:
-    st.success("✅ Las materias atrasadas seleccionadas no bloquean ninguna materia de este semestre.")
+# =========================================================================
+# 🖥️ LAYOUT: columna principal + columna lateral Profesores
+# =========================================================================
+col_main, col_prof = st.columns([3, 1], gap="medium")
 
-if materias_atrasadas_a_incluir:
-    nombres_incl = [f"**{m['materia']}** (Secc {m['secc']}, {m['hora']}, {m['profesor']})" for m in materias_atrasadas_a_incluir]
-    st.info(f"📌 **Materias atrasadas que se incluirán en el horario:** {', '.join(nombres_incl)}")
+with col_prof:
+    with st.expander("👨‍🏫 Profesores", expanded=False):
+        st.markdown("### Rango")
+        colores_rango = {
+            1: "#d4edda",  # verde claro
+            2: "#cce5ff",  # azul claro
+            3: "#fff3cd",  # amarillo
+            4: "#f8d7da",  # rojo claro
+            5: "#e2d9f3",  # morado
+        }
+        etiquetas_rango = {
+            1: "⭐ Rango 1 — Excelente",
+            2: "🟢 Rango 2 — Bueno",
+            3: "🟡 Rango 3 — Regular",
+            4: "🟠 Rango 4 — Bajo",
+            5: "🔴 Rango 5 — Muy bajo",
+        }
+        for rango in range(1, 6):
+            color = colores_rango[rango]
+            label = etiquetas_rango[rango]
+            profesores = sorted(set(PROFESORES_POR_RANGO[rango]))
+            with st.expander(label, expanded=False):
+                for prof in profesores:
+                    st.markdown(
+                        f"<div style='background:{color};border-radius:6px;padding:4px 8px;"
+                        f"margin-bottom:4px;font-size:13px;'>{prof}</div>",
+                        unsafe_allow_html=True
+                    )
 
-if st.button("🎲 Calcular Horario Óptimo", type="primary"):
-    total_materias_solicitadas = len(set(m['clave'] for m in lista_materias_trabajo)) + len(optativas_seleccionadas_usuario)
-    
-    if total_materias_solicitadas > 8:
-        st.error(f"❌ No fue posible crear el horario porque sobrepasa el límite de materias por semestre. (Solicitadas: {total_materias_solicitadas}, Máximo permitido: 8)")
-    elif not lista_materias_trabajo and not optativas_seleccionadas_usuario:
-        st.warning(f"La base de datos para el **{semestre_seleccionado}** está vacía.")
-    else:
-        calendario, prioridad_cumplida, om, om_prof, om_viernes, err = generar_horario_estricto(
-            lista_materias_trabajo, optativas_seleccionadas_usuario, profesores_inputs, lm_rango, aj_rango, v_rango, omitir_viernes
+with col_main:
+    st.title("🗓️ Generador de Horarios Dinámico y Prioritario")
+    st.subheader(f"Esquema Activo: {semestre_seleccionado}")
+
+    # Aviso de materias bloqueadas por prerequisitos faltantes
+    if claves_atrasadas and materias_omitidas_por_prereq:
+        st.error(
+            f"🚫 **Materias eliminadas del horario por prerequisitos incompletos:** "
+            f"{', '.join(sorted(materias_omitidas_por_prereq))}  \n"
+            f"_(Causa: tienes atrasada(s): {', '.join(nombres_atrasadas)})_"
         )
+    elif claves_atrasadas and not materias_omitidas_por_prereq:
+        st.success("✅ Las materias atrasadas seleccionadas no bloquean ninguna materia de este semestre.")
+
+    if materias_atrasadas_a_incluir:
+        nombres_incl = [f"**{m['materia']}** (Secc {m['secc']}, {m['hora']}, {m['profesor']})" for m in materias_atrasadas_a_incluir]
+        st.info(f"📌 **Materias atrasadas que se incluirán en el horario:** {', '.join(nombres_incl)}")
+
+    if st.button("🎲 Calcular Horario Óptimo", type="primary"):
+        total_materias_solicitadas = len(set(m['clave'] for m in lista_materias_trabajo)) + len(optativas_seleccionadas_usuario)
         
-        if calendario is not None:
-            # Mostrar razón específica por cada materia omitida
-            if om_viernes:
-                for mat in set(om_viernes):
-                    st.warning(f"⚠️ **{mat}** fue omitida porque solo tiene horario en viernes y tienes ese día desactivado.")
-            if om and isinstance(om, dict):
-                for nombre_mat, razon in om.items():
-                    if nombre_mat not in (om_viernes or []):
-                        st.warning(f"⚠️ **{nombre_mat}** fue omitida porque {razon}.")
-
-            if len(profesores_inputs) > 0 and len(calendario) > 0:
-                if prioridad_cumplida:
-                    st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios.")
-                else:
-                    st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se incluyeron por restricciones de cruce horario.")
-            elif len(calendario) > 0:
-                st.success(f"🎯 Horario estructurado correctamente. Carga final armada: {len(calendario)} materias.")
-
-            if calendario:
-                # 📅 ORDENAMIENTO ESTRICTO DESDE LAS 07:00 AM HASTA LAS 21:00 PM
-                bloques_fijos = [
-                    "0700-0829", "0700-0859", "0700-1059",
-                    "0900-1029", "0900-1059", "1000-1259",
-                    "1100-1229", "1100-1259",
-                    "1300-1429", "1300-1459", "1300-1559", "1300-1659",
-                    "1500-1629", "1500-1659", "1600-1959",
-                    "1700-1829", "1700-1859", "1700-2059",
-                    "1900-2059"
-                ]
-                
-                df_horario = pd.DataFrame("", index=bloques_fijos, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
-                
-                for m in calendario:
-                    info_celda = f"📚 {m['materia']}\nSecc: {m['secc']}\n👤 {m['profesor']}\n[NRC: {m['nrc']}]"
-                    if m['hora'] in df_horario.index:
-                        if 'L' in m['dias']: df_horario.at[m['hora'], "Lunes"] = info_celda
-                        if 'M' in m['dias']: df_horario.at[m['hora'], "Miércoles"] = info_celda
-                        if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
-                        if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
-                        if 'V' in m['dias']: df_horario.at[m['hora'], "Viernes"] = info_celda
-                    else:
-                        df_horario.loc[m['hora']] = ""
-                        df_horario = df_horario.sort_index()
-                        if 'L' in m['dias']: df_horario.at[m['hora'], "Lunes"] = info_celda
-                        if 'M' in m['dias']: df_horario.at[m['hora'], "Miércoles"] = info_celda
-                        if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
-                        if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
-                        if 'V' in m['dias']: df_horario.at[m['hora'], "Viernes"] = info_celda
-
-                columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "").all()]
-                df_horario_filtrado = df_horario[columnas_activas]
-
-                st.write("### 📅 Vista de Calendario Semanal")
-                st.markdown("<style>table { font-size: 13px !important; width: 100% !important; } th { background-color: #1E3A8A !important; color: white !important; } td { white-space: pre-line !important; height: 90px !important; vertical-align: top !important; background-color: #F8F9FA; border: 1px solid #D1D5DB !important; }</style>", unsafe_allow_html=True)
-                st.table(df_horario_filtrado)
-                
-                st.write("### 📝 Detalle del Horario Activo")
-                df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor']]
-                df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente']
-                df_lista = df_lista.sort_values(by=['Horario']).reset_index(drop=True)
-                st.dataframe(df_lista, use_container_width=True, hide_index=True)
-            else:
-                st.info("💡 No hay clases por mostrar en la cuadrícula debido a las restricciones activas.")
+        if total_materias_solicitadas > 8:
+            st.error(f"❌ No fue posible crear el horario porque sobrepasa el límite de materias por semestre. (Solicitadas: {total_materias_solicitadas}, Máximo permitido: 8)")
+        elif not lista_materias_trabajo and not optativas_seleccionadas_usuario:
+            st.warning(f"La base de datos para el **{semestre_seleccionado}** está vacía.")
         else:
-            # Solo llega aquí si todas las opciones fueron eliminadas antes de intentar generar
-            st.error(f"❌ {err}")
-            if om and isinstance(om, dict):
-                st.markdown("**Detalle de materias que no pudieron incluirse:**")
-                for nombre_mat, razon in om.items():
-                    st.warning(f"⚠️ **{nombre_mat}** — {razon}.")
+            calendario, prioridad_cumplida, om, om_prof, om_viernes, err = generar_horario_estricto(
+                lista_materias_trabajo, optativas_seleccionadas_usuario, profesores_inputs, lm_rango, aj_rango, v_rango, omitir_viernes
+            )
+            
+            if calendario is not None:
+                # Mostrar razón específica por cada materia omitida
+                if om_viernes:
+                    for mat in set(om_viernes):
+                        st.warning(f"⚠️ **{mat}** fue omitida porque solo tiene horario en viernes y tienes ese día desactivado.")
+                if om and isinstance(om, dict):
+                    for nombre_mat, razon in om.items():
+                        if nombre_mat not in (om_viernes or []):
+                            st.warning(f"⚠️ **{nombre_mat}** fue omitida porque {razon}.")
+
+                if len(profesores_inputs) > 0 and len(calendario) > 0:
+                    if prioridad_cumplida:
+                        st.info("💎 **Filtro Aplicado Correctamente:** Se fijaron exitosamente tus profesores prioritarios.")
+                    else:
+                        st.warning("⚠️ **Filtro No Aplicado Completamente:** Ciertos profesores prioritarios no se incluyeron por restricciones de cruce horario.")
+                elif len(calendario) > 0:
+                    st.success(f"🎯 Horario estructurado correctamente. Carga final armada: {len(calendario)} materias.")
+
+                if calendario:
+                    # 📅 ORDENAMIENTO ESTRICTO DESDE LAS 07:00 AM HASTA LAS 21:00 PM
+                    bloques_fijos = [
+                        "0700-0829", "0700-0859", "0700-1059",
+                        "0900-1029", "0900-1059", "1000-1259",
+                        "1100-1229", "1100-1259",
+                        "1300-1429", "1300-1459", "1300-1559", "1300-1659",
+                        "1500-1629", "1500-1659", "1600-1959",
+                        "1700-1829", "1700-1859", "1700-2059",
+                        "1900-2059"
+                    ]
+                    
+                    df_horario = pd.DataFrame("", index=bloques_fijos, columns=["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"])
+                    
+                    for m in calendario:
+                        info_celda = f"📚 {m['materia']}\nSecc: {m['secc']}\n👤 {m['profesor']}\n[NRC: {m['nrc']}]"
+                        if m['hora'] in df_horario.index:
+                            if 'L' in m['dias']: df_horario.at[m['hora'], "Lunes"] = info_celda
+                            if 'M' in m['dias']: df_horario.at[m['hora'], "Miércoles"] = info_celda
+                            if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
+                            if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
+                            if 'V' in m['dias']: df_horario.at[m['hora'], "Viernes"] = info_celda
+                        else:
+                            df_horario.loc[m['hora']] = ""
+                            df_horario = df_horario.sort_index()
+                            if 'L' in m['dias']: df_horario.at[m['hora'], "Lunes"] = info_celda
+                            if 'M' in m['dias']: df_horario.at[m['hora'], "Miércoles"] = info_celda
+                            if 'A' in m['dias']: df_horario.at[m['hora'], "Martes"] = info_celda
+                            if 'J' in m['dias']: df_horario.at[m['hora'], "Jueves"] = info_celda
+                            if 'V' in m['dias']: df_horario.at[m['hora'], "Viernes"] = info_celda
+
+                    columnas_activas = [col for col in df_horario.columns if not (df_horario[col] == "").all()]
+                    df_horario_filtrado = df_horario[columnas_activas]
+
+                    st.write("### 📅 Vista de Calendario Semanal")
+                    st.markdown("<style>table { font-size: 13px !important; width: 100% !important; } th { background-color: #1E3A8A !important; color: white !important; } td { white-space: pre-line !important; height: 90px !important; vertical-align: top !important; background-color: #F8F9FA; border: 1px solid #D1D5DB !important; }</style>", unsafe_allow_html=True)
+                    st.table(df_horario_filtrado)
+                    
+                    st.write("### 📝 Detalle del Horario Activo")
+                    df_lista = pd.DataFrame(calendario)[['nrc', 'clave', 'materia', 'secc', 'dias', 'hora', 'profesor']]
+                    df_lista.columns = ['NRC', 'Clave', 'Materia', 'Sección', 'Días', 'Horario', 'Docente']
+                    df_lista = df_lista.sort_values(by=['Horario']).reset_index(drop=True)
+                    st.dataframe(df_lista, use_container_width=True, hide_index=True)
+                else:
+                    st.info("💡 No hay clases por mostrar en la cuadrícula debido a las restricciones activas.")
+            else:
+                # Solo llega aquí si todas las opciones fueron eliminadas antes de intentar generar
+                st.error(f"❌ {err}")
+                if om and isinstance(om, dict):
+                    st.markdown("**Detalle de materias que no pudieron incluirse:**")
+                    for nombre_mat, razon in om.items():
+                        st.warning(f"⚠️ **{nombre_mat}** — {razon}.")
